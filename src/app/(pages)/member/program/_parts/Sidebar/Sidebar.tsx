@@ -67,24 +67,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
       </div>
       {courseStructure.map((section, index) => (
-        <div>
+        <div key={index}>
           <Progress value={calculateProgress(index)} className="h-2" />
-          <div
-            key={index}
-            className={`mb-4 pt-3 pb-1 ${section.color} rounded-lg`}
-          >
+          <div className={`mb-4 pt-3 pb-1 ${section.color} rounded-lg`}>
             <div className="flex mb-2 px-4">
-              <div className="flex-shrink-0 mr-2 pt-1">
-                <CircleCheckbox
-                  checked={completed[`section-${index}`]}
-                  onCheckedChange={(checked: boolean) =>
-                    setCompleted((prev) => ({
-                      ...prev,
-                      [`section-${index}`]: checked,
-                    }))
-                  }
-                />
-              </div>
               <div className="flex-grow">
                 <div
                   className="flex items-center justify-between cursor-pointer p-1"
@@ -93,7 +79,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     setSelectedLesson(`section-${index}`);
                   }}
                 >
-                  <span className="font-medium">{section.title}</span>
+                  <div className="flex items-center">
+                    <div>
+                      <CircleCheckbox
+                        checked={completed[`section-${index}`]}
+                        onCheckedChange={(checked: boolean) =>
+                          setCompleted((prev) => ({
+                            ...prev,
+                            [`section-${index}`]: checked,
+                          }))
+                        }
+                      />
+                    </div>
+
+                    <span className="font-medium ml-2">{section.title}</span>
+                  </div>
                   {expanded[index] ? (
                     <ChevronDown className="flex-shrink-0" />
                   ) : (
@@ -104,81 +104,77 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <div className="mt-2 pl-2">
                     {section.lessons.map((lesson, lessonIndex) => (
                       <div key={lessonIndex} className="mb-2">
-                        <div className="flex">
-                          <div className="flex-shrink-0 mr-2 pt-1">
-                            <CircleCheckbox
-                              checked={
-                                completed[`lesson-${index}-${lessonIndex}`]
-                              }
-                              onCheckedChange={(checked: boolean) =>
-                                setCompleted((prev) => ({
-                                  ...prev,
-                                  [`lesson-${index}-${lessonIndex}`]: checked,
-                                }))
-                              }
-                            />
-                          </div>
-                          <div className="flex-grow">
-                            <div
-                              className="flex items-center justify-between cursor-pointer p-1"
-                              onClick={() => {
-                                setExpanded((prev) => ({
-                                  ...prev,
-                                  [`${index}-${lessonIndex}`]:
-                                    !prev[`${index}-${lessonIndex}`],
-                                }));
-                                setSelectedLesson(
-                                  `lesson-${index}-${lessonIndex}`
-                                );
-                              }}
-                            >
-                              <span>{lesson.title}</span>
-                              {expanded[`${index}-${lessonIndex}`] ? (
-                                <ChevronDown size={14} />
-                              ) : (
-                                <ChevronRight size={14} />
-                              )}
+                        <div className="flex-grow">
+                          <div
+                            className="flex items-center justify-between cursor-pointer p-1"
+                            onClick={() => {
+                              setExpanded((prev) => ({
+                                ...prev,
+                                [`${index}-${lessonIndex}`]:
+                                  !prev[`${index}-${lessonIndex}`],
+                              }));
+                              setSelectedLesson(
+                                `lesson-${index}-${lessonIndex}`
+                              );
+                            }}
+                          >
+                            <div className="flex items-center">
+                              <div>
+                                <CircleCheckbox
+                                  checked={
+                                    completed[`lesson-${index}-${lessonIndex}`]
+                                  }
+                                  onCheckedChange={(checked: boolean) =>
+                                    setCompleted((prev) => ({
+                                      ...prev,
+                                      [`lesson-${index}-${lessonIndex}`]:
+                                        checked,
+                                    }))
+                                  }
+                                />
+                              </div>
+
+                              <span className="ml-2">{lesson.title}</span>
                             </div>
-                            {expanded[`${index}-${lessonIndex}`] && (
-                              <ul className="mt-1 pl-2">
-                                {lesson.sublessons.map(
-                                  (sublesson, subIndex) => (
-                                    <li
-                                      key={subIndex}
-                                      className="flex items-center text-sm text-gray-600 mb-1"
-                                    >
-                                      <div className="flex-shrink-0 mr-2">
-                                        <CircleCheckbox
-                                          checked={
-                                            completed[
-                                              `sublesson-${index}-${lessonIndex}-${subIndex}`
-                                            ]
-                                          }
-                                          onCheckedChange={(checked: boolean) =>
-                                            setCompleted((prev) => ({
-                                              ...prev,
-                                              [`sublesson-${index}-${lessonIndex}-${subIndex}`]:
-                                                checked,
-                                            }))
-                                          }
-                                        />
-                                      </div>
-                                      <span
-                                        className="cursor-pointer"
-                                        onClick={() =>
-                                          setSelectedLesson(
-                                            `sublesson-${index}-${lessonIndex}-${subIndex}`
-                                          )
-                                        }
-                                      >
-                                        {sublesson}
-                                      </span>
-                                    </li>
-                                  )
-                                )}
-                              </ul>
+                            {expanded[`${index}-${lessonIndex}`] ? (
+                              <ChevronDown size={14} />
+                            ) : (
+                              <ChevronRight size={14} />
                             )}
                           </div>
+                          {expanded[`${index}-${lessonIndex}`] && (
+                            <ul className="mt-1 pl-2">
+                              {lesson.sublessons.map((sublesson, subIndex) => (
+                                <li
+                                  key={subIndex}
+                                  className="flex items-center text-sm text-gray-600 mb-1 cursor-pointer"
+                                  onClick={() =>
+                                    setSelectedLesson(
+                                      `sublesson-${index}-${lessonIndex}-${subIndex}`
+                                    )
+                                  }
+                                >
+                                  <div>
+                                    <CircleCheckbox
+                                      checked={
+                                        completed[
+                                          `sublesson-${index}-${lessonIndex}-${subIndex}`
+                                        ]
+                                      }
+                                      onCheckedChange={(checked: boolean) =>
+                                        setCompleted((prev) => ({
+                                          ...prev,
+                                          [`sublesson-${index}-${lessonIndex}-${subIndex}`]:
+                                            checked,
+                                        }))
+                                      }
+                                    />
+                                  </div>
+                                  <span className="ml-2">{sublesson}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
                         </div>
                       </div>
                     ))}
