@@ -4,11 +4,13 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import Placeholder from "@tiptap/extension-placeholder";
+import TextAlign from '@tiptap/extension-text-align';
+import Underline from '@tiptap/extension-underline';
 import { Button } from "@/components/ui/button";
 import {
   Bold,
   Italic,
-  Underline,
+  Underline as UnderlineIcon,
   Strikethrough,
   Code,
   Heading1,
@@ -39,6 +41,10 @@ export const Editor = ({ isAdmin, selectedLesson }: EditorProps) => {
       Placeholder.configure({
         placeholder: "Start writing...",
       }),
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+      }),
+      Underline,
     ],
     content: "<p>Hello, start editing here!</p>",
     editorProps: {
@@ -85,7 +91,7 @@ export const Editor = ({ isAdmin, selectedLesson }: EditorProps) => {
           onClick={() => editor.chain().focus().toggleUnderline().run()}
           className={editor.isActive("underline") ? "bg-gray-200" : ""}
         >
-          <Underline className="h-4 w-4" />
+          <UnderlineIcon className="h-4 w-4" />
         </Button>
         <Button
           variant="ghost"
@@ -158,40 +164,32 @@ export const Editor = ({ isAdmin, selectedLesson }: EditorProps) => {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => editor.chain().focus().setTextAlign("left").run()}
-          className={
-            editor.isActive({ textAlign: "left" }) ? "bg-gray-200" : ""
-          }
+          onClick={() => editor.chain().focus().setTextAlign('left').run()}
+          className={editor.isActive({ textAlign: 'left' }) ? "bg-gray-200" : ""}
         >
           <AlignLeft className="h-4 w-4" />
         </Button>
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => editor.chain().focus().setTextAlign("center").run()}
-          className={
-            editor.isActive({ textAlign: "center" }) ? "bg-gray-200" : ""
-          }
+          onClick={() => editor.chain().focus().setTextAlign('center').run()}
+          className={editor.isActive({ textAlign: 'center' }) ? "bg-gray-200" : ""}
         >
           <AlignCenter className="h-4 w-4" />
         </Button>
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => editor.chain().focus().setTextAlign("right").run()}
-          className={
-            editor.isActive({ textAlign: "right" }) ? "bg-gray-200" : ""
-          }
+          onClick={() => editor.chain().focus().setTextAlign('right').run()}
+          className={editor.isActive({ textAlign: 'right' }) ? "bg-gray-200" : ""}
         >
           <AlignRight className="h-4 w-4" />
         </Button>
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => editor.chain().focus().setTextAlign("justify").run()}
-          className={
-            editor.isActive({ textAlign: "justify" }) ? "bg-gray-200" : ""
-          }
+          onClick={() => editor.chain().focus().setTextAlign('justify').run()}
+          className={editor.isActive({ textAlign: 'justify' }) ? "bg-gray-200" : ""}
         >
           <AlignJustify className="h-4 w-4" />
         </Button>
@@ -213,7 +211,7 @@ export const Editor = ({ isAdmin, selectedLesson }: EditorProps) => {
           <Redo className="h-4 w-4" />
         </Button>
       </div>
-      <EditorContent editor={editor} />
+      <EditorContent editor={editor} className="tiptap-editor" />
     </div>
   );
 };
