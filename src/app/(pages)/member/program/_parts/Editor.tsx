@@ -4,8 +4,8 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import Placeholder from "@tiptap/extension-placeholder";
-import TextAlign from '@tiptap/extension-text-align';
-import Underline from '@tiptap/extension-underline';
+import TextAlign from "@tiptap/extension-text-align";
+import Underline from "@tiptap/extension-underline";
 import { Button } from "@/components/ui/button";
 import {
   Bold,
@@ -27,6 +27,7 @@ import {
   Redo,
 } from "lucide-react";
 import { SelectedLessonType } from "./Sidebar/config";
+import { useState } from "react";
 
 interface EditorProps {
   isAdmin: boolean;
@@ -34,6 +35,8 @@ interface EditorProps {
 }
 
 export const Editor = ({ isAdmin, selectedLesson }: EditorProps) => {
+  const [jsonContentSaved, setJsonContent] = useState<any>(null);
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -42,7 +45,7 @@ export const Editor = ({ isAdmin, selectedLesson }: EditorProps) => {
         placeholder: "Start writing...",
       }),
       TextAlign.configure({
-        types: ['heading', 'paragraph'],
+        types: ["heading", "paragraph"],
       }),
       Underline,
     ],
@@ -67,8 +70,25 @@ export const Editor = ({ isAdmin, selectedLesson }: EditorProps) => {
     }
   };
 
+  const getContentFromEditor = () => {
+    const json = editor.getJSON();
+    setJsonContent(json);
+    console.log("getJSON", json);
+  };
+
+  const retrieveContentFromEditor = () => {
+    const json = editor.commands.setContent(jsonContentSaved);
+    console.log("jsonContentSaved", jsonContentSaved);
+  };
+
   return (
     <div className="border rounded-lg overflow-hidden">
+      <Button variant="secondary" onClick={getContentFromEditor}>
+        Get JSON from editor
+      </Button>
+      <Button variant="secondary" onClick={retrieveContentFromEditor}>
+        Retrieve
+      </Button>
       <div className="bg-gray-100 p-2 flex flex-wrap gap-2">
         <Button
           variant="ghost"
@@ -165,32 +185,40 @@ export const Editor = ({ isAdmin, selectedLesson }: EditorProps) => {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => editor.chain().focus().setTextAlign('left').run()}
-          className={editor.isActive({ textAlign: 'left' }) ? "bg-gray-200" : ""}
+          onClick={() => editor.chain().focus().setTextAlign("left").run()}
+          className={
+            editor.isActive({ textAlign: "left" }) ? "bg-gray-200" : ""
+          }
         >
           <AlignLeft className="h-4 w-4" />
         </Button>
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => editor.chain().focus().setTextAlign('center').run()}
-          className={editor.isActive({ textAlign: 'center' }) ? "bg-gray-200" : ""}
+          onClick={() => editor.chain().focus().setTextAlign("center").run()}
+          className={
+            editor.isActive({ textAlign: "center" }) ? "bg-gray-200" : ""
+          }
         >
           <AlignCenter className="h-4 w-4" />
         </Button>
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => editor.chain().focus().setTextAlign('right').run()}
-          className={editor.isActive({ textAlign: 'right' }) ? "bg-gray-200" : ""}
+          onClick={() => editor.chain().focus().setTextAlign("right").run()}
+          className={
+            editor.isActive({ textAlign: "right" }) ? "bg-gray-200" : ""
+          }
         >
           <AlignRight className="h-4 w-4" />
         </Button>
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => editor.chain().focus().setTextAlign('justify').run()}
-          className={editor.isActive({ textAlign: 'justify' }) ? "bg-gray-200" : ""}
+          onClick={() => editor.chain().focus().setTextAlign("justify").run()}
+          className={
+            editor.isActive({ textAlign: "justify" }) ? "bg-gray-200" : ""
+          }
         >
           <AlignJustify className="h-4 w-4" />
         </Button>
