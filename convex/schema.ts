@@ -8,4 +8,10 @@ export default defineSchema({
     lastName: v.optional(v.string()),
     stripeCheckoutId: v.optional(v.string()),
   }).index("by_email", ["email"]),
+
+  course: defineTable({
+    lessonId: v.string(),
+    title: v.string(),
+    content: v.any(),
+  }),
 });

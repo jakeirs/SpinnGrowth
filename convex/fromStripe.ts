@@ -54,7 +54,7 @@ export const webhookFulfill = internalAction({
           stripeCheckoutId: stripeCheckoutId,
         };
 
-        await ctx.runMutation(internal.users.createUser, { ...userDetails });
+        await ctx.runMutation(internal.fromUsers.createUser, { ...userDetails });
       }
       return { success: true };
     } catch (err) {
