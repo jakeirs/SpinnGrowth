@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -9,7 +9,7 @@ import { CircleCheckbox } from "../CircleCheckbox";
 import { courseStructure, ExpandedState, SidebarProps } from "./config";
 
 export const Sidebar: React.FC<SidebarProps> = ({
-  expanded = true,
+  expanded = {},
   setExpanded,
   completed,
   setCompleted,
@@ -51,6 +51,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
     });
     setExpanded(newExpanded);
   };
+
+  useEffect(() => {
+    toggleExpandAll(true);
+  }, []);
 
   return (
     <ScrollArea className="h-screen w-80 bg-gray-100 p-4">
