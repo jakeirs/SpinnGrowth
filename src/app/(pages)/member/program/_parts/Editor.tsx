@@ -27,10 +27,8 @@ import {
   Redo,
 } from "lucide-react";
 import { SelectedLessonType } from "./Sidebar/config";
-import { useState } from "react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import ClientConsoleLog from "@/components/technical/ClientConsoleLog";
 
 interface EditorProps {
   isAdmin: boolean;
@@ -38,7 +36,6 @@ interface EditorProps {
 }
 
 export const Editor = ({ isAdmin, selectedLesson }: EditorProps) => {
-  const [jsonContent, setJsonContent] = useState<any>();
   const passCourseDataToDb = useMutation(api.fromCourse.uploadCourseData);
 
   const editor = useEditor({
@@ -76,24 +73,17 @@ export const Editor = ({ isAdmin, selectedLesson }: EditorProps) => {
 
   const saveToConvex = async () => {
     const json = editor.getJSON();
-    setJsonContent(json);
-    const courseId = await passCourseDataToDb({
-      content: json,
-      lessonId: "0-0-1",
-      title: "Siemanko",
-    });
 
-    console.log("courseId", courseId);
-
-    // try {
-    //   await saveContent({
-    //     lessonId: selectedLesson.id,
-    //     content: json,
-    //   });
-    //   console.log("Content saved successfully");
-    // } catch (error) {
-    //   console.error("Error saving content:", error);
-    // }
+    try {
+      const courseId = await passCourseDataToDb({
+        lessonId: "2",
+        content: json,
+        title: "Siema Cheniu",
+      });
+      console.log("Content saved successfully", courseId);
+    } catch (error) {
+      console.error("Error saving content:", error);
+    }
   };
 
   const retrieveContentFromEditor = () => {
