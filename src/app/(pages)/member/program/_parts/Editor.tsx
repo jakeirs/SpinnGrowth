@@ -89,6 +89,8 @@ export const Editor = ({ isAdmin, selectedLesson }: EditorProps) => {
   const retrieveContentFromEditor = async () => {
     const { document } = await takeLessonCourse({ lessonId: "4" });
 
+    if (!document) return;
+
     console.log(document);
   };
 
