@@ -1,17 +1,30 @@
-import { Button } from "@/components/ui/button";
-import { ProfileForm } from "./_parts/form";
+import { Editor, Sidebar } from "@/components/course-page";
+import { Switch } from "@/components/ui/switch";
+import { useState } from "react";
 
-export default function IndexPage() {
+export function CoursePage() {
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [expanded, setExpanded] = useState({});
+  const [completed, setCompleted] = useState({});
+
   return (
-    <div>
-      IndexPage
-      <div>
-        Login To course content
-        <Button asChild>Siema</Button>
-        <div>
-          <ProfileForm />
+    <div className="flex h-screen">
+      <Sidebar
+        expanded={expanded}
+        setExpanded={setExpanded}
+        completed={completed}
+        setCompleted={setCompleted}
+      />
+      <main className="flex-1 p-6">
+        <div className="flex justify-end mb-4">
+          <div className="flex items-center">
+            <span className="mr-2">Admin Mode</span>
+            <Switch checked={isAdmin} onCheckedChange={setIsAdmin} />
+          </div>
         </div>
-      </div>
+        <h1 className="text-2xl font-bold mb-4">Course Title</h1>
+        <Editor isAdmin={isAdmin} />
+      </main>
     </div>
   );
 }
