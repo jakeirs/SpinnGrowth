@@ -10,7 +10,8 @@ export default function CoursePage() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [expanded, setExpanded] = useState({});
   const [completed, setCompleted] = useState({});
-  const [selectedLesson, setSelectedLesson] = useState<SelectedLessonType>(null);
+  const [selectedLesson, setSelectedLesson] =
+    useState<SelectedLessonType>(null);
 
   return (
     <div className="flex h-screen">

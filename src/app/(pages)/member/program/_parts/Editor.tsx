@@ -29,7 +29,6 @@ import {
 import { SelectedLessonType } from "./Sidebar/config";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-
 interface EditorProps {
   isAdmin: boolean;
   selectedLesson: SelectedLessonType;
@@ -37,6 +36,7 @@ interface EditorProps {
 
 export const Editor = ({ isAdmin, selectedLesson }: EditorProps) => {
   const passCourseDataToDb = useMutation(api.fromCourse.uploadCourseData);
+  const takeLessonCourse = useMutation(api.fromCourse.retrieveLessonCourse);
 
   const editor = useEditor({
     extensions: [
@@ -86,8 +86,10 @@ export const Editor = ({ isAdmin, selectedLesson }: EditorProps) => {
     }
   };
 
-  const retrieveContentFromEditor = () => {
-    // This function is not implemented yet
+  const retrieveContentFromEditor = async () => {
+    const { document } = await takeLessonCourse({ lessonId: "4" });
+
+    console.log(document);
   };
 
   return (

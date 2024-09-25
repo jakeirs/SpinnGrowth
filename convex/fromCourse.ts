@@ -46,3 +46,28 @@ export const uploadCourseData = mutation({
     }
   },
 });
+
+export const retrieveLessonCourse = mutation({
+  args: {
+    lessonId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const { lessonId } = args;
+
+    if (typeof lessonId !== "string" || lessonId.trim() === "") {
+      throw new Error("Invalid lessonId");
+    }
+
+    try {
+      const document = await ctx.db
+        .query("course")
+        .filter((q) => q.eq(q.field("lessonId"), lessonId))
+        .first();
+
+      return { success: true, document };
+    } catch (err) {
+      console.error("Error querying lesson course", err);
+      throw err;
+    }
+  },
+});
