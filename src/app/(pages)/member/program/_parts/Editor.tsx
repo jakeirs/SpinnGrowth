@@ -53,6 +53,7 @@ export const Editor = ({ isAdmin, selectedLesson }: EditorProps) => {
       },
     },
     editable: isAdmin,
+    immediatelyRender: false, // Add this line to address the SSR warning
   });
 
   if (!editor) {
