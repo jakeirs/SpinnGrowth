@@ -35,8 +35,10 @@ interface EditorProps {
 }
 
 export const Editor = ({ isAdmin, selectedLesson }: EditorProps) => {
-  const passCourseDataToDb = useMutation(api.fromCourse.uploadCourseData);
-  const takeLessonCourse = useMutation(api.fromCourse.retrieveLessonCourse);
+  const saveLessonToDb = useMutation(api.fromLessons.uploadCourseData);
+  const takeLessonCourse = useMutation(api.fromLessons.retrieveLessonCourse);
+
+  console.log("selectedLesson", selectedLesson);
 
   const editor = useEditor({
     extensions: [
@@ -71,14 +73,18 @@ export const Editor = ({ isAdmin, selectedLesson }: EditorProps) => {
     }
   };
 
-  const saveToConvex = async () => {
+  const onClickSaveLessonContent = async () => {
+    if (!selectedLesson) {
+      throw new Error("No Selected Lesson Id Provided");
+    }
+
     const json = editor.getJSON();
 
     try {
-      const courseId = await passCourseDataToDb({
-        lessonId: "4",
+      const courseId = await saveLessonToDb({
+        lessonId: selectedLesson,
         content: json,
-        title: "Siema Cheniu Dzbienu",
+        title: "Siema Cheniu Dzbienu sad",
       });
       console.log(courseId);
     } catch (error) {
@@ -86,20 +92,25 @@ export const Editor = ({ isAdmin, selectedLesson }: EditorProps) => {
     }
   };
 
-  const retrieveContentFromEditor = async () => {
-    const { document } = await takeLessonCourse({ lessonId: "4" });
+  const onClickTakeLessonContent = async () => {
+    if (!selectedLesson) {
+      throw new Error("No Selected Lesson Id Provided");
+    }
+
+    const { document } = await takeLessonCourse({ lessonId: selectedLesson });
 
     if (!document) return;
 
-    console.log(document);
+    const { content } = document;
+    editor.commands.setContent(content);
   };
 
   return (
     <div className="border rounded-lg overflow-hidden">
-      <Button variant="secondary" onClick={saveToConvex}>
+      <Button variant="secondary" onClick={onClickSaveLessonContent}>
         saveToConvex
       </Button>
-      <Button variant="secondary" onClick={retrieveContentFromEditor}>
+      <Button variant="secondary" onClick={onClickTakeLessonContent}>
         Retrieve
       </Button>
       <div className="bg-gray-100 p-2 flex flex-wrap gap-2">

@@ -9,7 +9,7 @@ export default defineSchema({
     stripeCheckoutId: v.optional(v.string()),
   }).index("by_email", ["email"]),
 
-  course: defineTable({
+  lessons: defineTable({
     lessonId: v.string(),
     title: v.string(),
     content: v.any(),

@@ -23,23 +23,26 @@ export const uploadCourseData = mutation({
     }
 
     const existing = await ctx.db
-      .query("course")
+      .query("lessons")
       .filter((q) =>
         q.or(q.eq(q.field("lessonId"), lessonId), q.eq(q.field("title"), title))
       )
       .first();
 
     if (existing) {
-      return { success: false, message: "Record already exists" };
+      return {
+        success: false,
+        message: `Record already exists: title or lessonId`,
+      };
     }
 
     try {
-      const courseId = await ctx.db.insert("course", {
+      const lessonRecordId = await ctx.db.insert("lessons", {
         lessonId,
         content,
         title,
       });
-      return { success: true, courseId };
+      return { success: true, lessonRecordId };
     } catch (err) {
       console.error("Error mutating data", err);
       throw err;
@@ -60,7 +63,7 @@ export const retrieveLessonCourse = mutation({
 
     try {
       const document = await ctx.db
-        .query("course")
+        .query("lessons")
         .filter((q) => q.eq(q.field("lessonId"), lessonId))
         .first();
 
