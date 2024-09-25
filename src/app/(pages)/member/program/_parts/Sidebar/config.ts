@@ -1,3 +1,5 @@
+import React from 'react';
+
 export interface Sublesson {
   title: string;
 }
@@ -21,11 +23,14 @@ export interface ExpandedState {
   [key: string]: boolean;
 }
 
+export type SelectedLessonType = string | null;
+
 export interface SidebarProps {
   expanded: ExpandedState;
   setExpanded: React.Dispatch<React.SetStateAction<ExpandedState>>;
   completed: CompletedState;
   setCompleted: React.Dispatch<React.SetStateAction<CompletedState>>;
+  setSelectedLesson: React.Dispatch<React.SetStateAction<SelectedLessonType>>;
 }
 
 export const courseStructure: Section[] = [

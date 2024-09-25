@@ -13,6 +13,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   setExpanded,
   completed,
   setCompleted,
+  setSelectedLesson,
 }) => {
   const [expandAll, setExpandAll] = useState<boolean>(true);
 
@@ -66,123 +67,124 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
       </div>
       {courseStructure.map((section, index) => (
-        <div key={index} className={`mb-4 ${section.color}`}>
-          <Progress value={calculateProgress(index)} className="h-2 mb-2" />
-          <div className="flex items-start mb-2">
-            <div className="mr-2 relative">
-              <CircleCheckbox
-                checked={completed[`section-${index}`]}
-                onCheckedChange={(checked: boolean) =>
-                  setCompleted((prev) => ({
-                    ...prev,
-                    [`section-${index}`]: checked,
-                  }))
-                }
-                className="z-10 relative"
-              />
-              {expanded[index] && (
-                <div className="absolute top-5 bottom-0 left-2.5 w-0.5 bg-gray-300 -z-10" />
-              )}
-            </div>
-            <div className="flex-grow">
-              <div className="flex items-center justify-between">
-                <span className="font-medium">{section.title}</span>
-                <button
-                  className="flex items-center"
-                  onClick={() =>
-                    setExpanded((prev) => ({ ...prev, [index]: !prev[index] }))
+        <div>
+          <Progress value={calculateProgress(index)} className="h-2" />
+          <div
+            key={index}
+            className={`mb-4 pt-3 pb-1 ${section.color} rounded-lg`}
+          >
+            <div className="flex mb-2 px-4">
+              <div className="flex-shrink-0 mr-2 pt-1">
+                <CircleCheckbox
+                  checked={completed[`section-${index}`]}
+                  onCheckedChange={(checked: boolean) =>
+                    setCompleted((prev) => ({
+                      ...prev,
+                      [`section-${index}`]: checked,
+                    }))
                   }
-                  aria-label={
-                    expanded[index] ? "Collapse section" : "Expand section"
-                  }
+                />
+              </div>
+              <div className="flex-grow">
+                <div
+                  className="flex items-center justify-between cursor-pointer p-1"
+                  onClick={() => {
+                    setExpanded((prev) => ({ ...prev, [index]: !prev[index] }));
+                    setSelectedLesson(`section-${index}`);
+                  }}
                 >
+                  <span className="font-medium">{section.title}</span>
                   {expanded[index] ? (
                     <ChevronDown className="flex-shrink-0" />
                   ) : (
                     <ChevronRight className="flex-shrink-0" />
                   )}
-                </button>
-              </div>
-              {expanded[index] && (
-                <div className="mt-2">
-                  {section.lessons.map((lesson, lessonIndex) => (
-                    <div key={lessonIndex} className="ml-4 mb-2">
-                      <div className="flex items-start">
-                        <div className="mr-2 relative">
-                          <CircleCheckbox
-                            checked={
-                              completed[`lesson-${index}-${lessonIndex}`]
-                            }
-                            onCheckedChange={(checked: boolean) =>
-                              setCompleted((prev) => ({
-                                ...prev,
-                                [`lesson-${index}-${lessonIndex}`]: checked,
-                              }))
-                            }
-                            className="z-10 relative"
-                          />
-                          {expanded[`${index}-${lessonIndex}`] && (
-                            <div className="absolute top-5 bottom-0 left-2.5 w-0.5 bg-gray-300 -z-10" />
-                          )}
-                        </div>
-                        <div className="flex-grow">
-                          <div className="flex items-center justify-between">
-                            <span>{lesson.title}</span>
-                            <button
-                              className="flex items-center"
-                              onClick={() =>
+                </div>
+                {expanded[index] && (
+                  <div className="mt-2 pl-2">
+                    {section.lessons.map((lesson, lessonIndex) => (
+                      <div key={lessonIndex} className="mb-2">
+                        <div className="flex">
+                          <div className="flex-shrink-0 mr-2 pt-1">
+                            <CircleCheckbox
+                              checked={
+                                completed[`lesson-${index}-${lessonIndex}`]
+                              }
+                              onCheckedChange={(checked: boolean) =>
+                                setCompleted((prev) => ({
+                                  ...prev,
+                                  [`lesson-${index}-${lessonIndex}`]: checked,
+                                }))
+                              }
+                            />
+                          </div>
+                          <div className="flex-grow">
+                            <div
+                              className="flex items-center justify-between cursor-pointer p-1"
+                              onClick={() => {
                                 setExpanded((prev) => ({
                                   ...prev,
                                   [`${index}-${lessonIndex}`]:
                                     !prev[`${index}-${lessonIndex}`],
-                                }))
-                              }
-                              aria-label={
-                                expanded[`${index}-${lessonIndex}`]
-                                  ? "Collapse lesson"
-                                  : "Expand lesson"
-                              }
+                                }));
+                                setSelectedLesson(
+                                  `lesson-${index}-${lessonIndex}`
+                                );
+                              }}
                             >
+                              <span>{lesson.title}</span>
                               {expanded[`${index}-${lessonIndex}`] ? (
                                 <ChevronDown size={14} />
                               ) : (
                                 <ChevronRight size={14} />
                               )}
-                            </button>
+                            </div>
+                            {expanded[`${index}-${lessonIndex}`] && (
+                              <ul className="mt-1 pl-2">
+                                {lesson.sublessons.map(
+                                  (sublesson, subIndex) => (
+                                    <li
+                                      key={subIndex}
+                                      className="flex items-center text-sm text-gray-600 mb-1"
+                                    >
+                                      <div className="flex-shrink-0 mr-2">
+                                        <CircleCheckbox
+                                          checked={
+                                            completed[
+                                              `sublesson-${index}-${lessonIndex}-${subIndex}`
+                                            ]
+                                          }
+                                          onCheckedChange={(checked: boolean) =>
+                                            setCompleted((prev) => ({
+                                              ...prev,
+                                              [`sublesson-${index}-${lessonIndex}-${subIndex}`]:
+                                                checked,
+                                            }))
+                                          }
+                                        />
+                                      </div>
+                                      <span
+                                        className="cursor-pointer"
+                                        onClick={() =>
+                                          setSelectedLesson(
+                                            `sublesson-${index}-${lessonIndex}-${subIndex}`
+                                          )
+                                        }
+                                      >
+                                        {sublesson}
+                                      </span>
+                                    </li>
+                                  )
+                                )}
+                              </ul>
+                            )}
                           </div>
-                          {expanded[`${index}-${lessonIndex}`] && (
-                            <ul className="mt-1">
-                              {lesson.sublessons.map((sublesson, subIndex) => (
-                                <li
-                                  key={subIndex}
-                                  className="flex items-start text-sm text-gray-600 mb-1 ml-4"
-                                >
-                                  <CircleCheckbox
-                                    checked={
-                                      completed[
-                                        `sublesson-${index}-${lessonIndex}-${subIndex}`
-                                      ]
-                                    }
-                                    onCheckedChange={(checked: boolean) =>
-                                      setCompleted((prev) => ({
-                                        ...prev,
-                                        [`sublesson-${index}-${lessonIndex}-${subIndex}`]:
-                                          checked,
-                                      }))
-                                    }
-                                    className="mr-2 mt-0.5"
-                                  />
-                                  <span>{sublesson}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          )}
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
