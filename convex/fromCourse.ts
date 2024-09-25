@@ -8,19 +8,38 @@ export const uploadCourseData = mutation({
     content: v.any(),
   },
   handler: async (ctx, args) => {
-    // Validate input data if necessary
-    if (typeof args.lessonId !== "string" || args.lessonId.trim() === "") {
+    const { title, lessonId, content } = args;
+
+    if (typeof lessonId !== "string" || lessonId.trim() === "") {
       throw new Error("Invalid lessonId");
     }
 
+    if (typeof title !== "string" || title.trim() === "") {
+      throw new Error("Invalid title");
+    }
+
+    if (typeof title !== "string" || title.trim() === "") {
+      throw new Error("Invalid content");
+    }
+
+    const existing = await ctx.db
+      .query("course")
+      .filter((q) =>
+        q.or(q.eq(q.field("lessonId"), lessonId), q.eq(q.field("title"), title))
+      )
+      .first();
+
+    if (existing) {
+      return { success: false, message: "Record already exists" };
+    }
+
     try {
-      // Insert the data into the "course" table
       const courseId = await ctx.db.insert("course", {
-        lessonId: args.lessonId,
-        content: args.content,
-        title: args.title,
+        lessonId,
+        content,
+        title,
       });
-      return { courseId };
+      return { success: true, courseId };
     } catch (err) {
       console.error("Error mutating data", err);
       throw err;

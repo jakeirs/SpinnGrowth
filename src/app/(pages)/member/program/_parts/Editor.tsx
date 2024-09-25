@@ -76,11 +76,11 @@ export const Editor = ({ isAdmin, selectedLesson }: EditorProps) => {
 
     try {
       const courseId = await passCourseDataToDb({
-        lessonId: "2",
+        lessonId: "4",
         content: json,
-        title: "Siema Cheniu",
+        title: "Siema Cheniu Dzbienu",
       });
-      console.log("Content saved successfully", courseId);
+      console.log(courseId);
     } catch (error) {
       console.error("Error saving content:", error);
     }
