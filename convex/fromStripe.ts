@@ -3,7 +3,6 @@
 import { v } from "convex/values";
 import { action, internalAction } from "./_generated/server";
 import Stripe from "stripe";
-import { internal } from "./_generated/api";
 
 export const stripe = new Stripe(process.env.STRIPE_KEY!, {
   apiVersion: "2024-06-20",
@@ -54,7 +53,7 @@ export const webhookFulfill = internalAction({
           stripeCheckoutId: stripeCheckoutId,
         };
 
-        await ctx.runMutation(internal.fromUsers.createUser, { ...userDetails });
+        // await ctx.runMutation(internal.fromUsers.createUser, { ...userDetails });
       }
       return { success: true };
     } catch (err) {

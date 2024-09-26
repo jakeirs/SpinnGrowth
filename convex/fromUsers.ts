@@ -1,38 +1,61 @@
 import { v } from "convex/values";
-import { internalMutation, query } from "./_generated/server";
+import { mutation } from "./_generated/server";
+import { vSessionId } from "convex-helpers/server/sessions";
 
-export const createUser = internalMutation({
-  args: { email: v.string(), stripeCheckoutId: v.string() },
-  handler: async (ctx, { email, stripeCheckoutId }) => {
-    const newUserId = await ctx.db.insert("users", { email, stripeCheckoutId });
-
-    return newUserId;
+export const setSessionForUser = mutation({
+  args: {
+    sessionId: vSessionId,
+    userId: v.id("users"),
   },
-});
-
-export const getUsers = query({
-  args: {},
   handler: async (ctx, args) => {
-    const users = await ctx.db.query("users").collect();
+    const { sessionId, userId } = args;
 
-    return users;
+    if (typeof sessionId !== "string" || sessionId.trim() === "") {
+      throw new Error("Invalid sessionId");
+    }
+
+    if (typeof userId !== "string" || userId.trim() === "") {
+      throw new Error("Invalid userId");
+    }
+
+    const existingUser = await ctx.db.get(userId);
+
+    if (!existingUser) {
+      return { success: false, message: "User doesn't exist" };
+    }
+
+    await ctx.db.patch(userId, { sessionId });
+
+    return { success: true, document: { sessionId, role: existingUser.role } };
   },
 });
 
-export const checkIfUserPaid = query({
-  args: { email: v.string() },
-  handler: async (ctx, { email }) => {
+export const getRole = mutation({
+  args: {
+    sessionId: vSessionId,
+  },
+  handler: async (ctx, args) => {
+    const { sessionId } = args;
+
+    if (typeof sessionId !== "string" || sessionId.trim() === "") {
+      throw new Error("Invalid sessionId");
+    }
+
     const user = await ctx.db
       .query("users")
-      .withIndex("by_email", (q) => q.eq("email", email))
-      .unique();
+      .withIndex("by_sessionId", (q) => q.eq("sessionId", sessionId))
+      .first();
 
     if (!user) {
-      throw new Error("User didn't pay or not exist");
+      return {
+        success: false,
+        message: "User with this sessionId doesn't exist",
+      };
     }
 
     return {
-      user,
+      success: true,
+      role: user.role,
     };
   },
 });
