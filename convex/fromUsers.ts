@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { mutation } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import { vSessionId } from "convex-helpers/server/sessions";
 
 export const setSessionForUser = mutation({
@@ -30,7 +30,7 @@ export const setSessionForUser = mutation({
   },
 });
 
-export const getRole = mutation({
+export const getRole = query({
   args: {
     sessionId: vSessionId,
   },
@@ -50,6 +50,7 @@ export const getRole = mutation({
       return {
         success: false,
         message: "User with this sessionId doesn't exist",
+        role: undefined,
       };
     }
 
