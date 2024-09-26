@@ -6,19 +6,23 @@ import { Switch } from "@/components/ui/switch";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
 import { CircleCheckbox } from "../CircleCheckbox";
-import { courseStructure, ExpandedState, SidebarProps } from "./config";
+import { courseStructure, ExpandedState } from "./config";
+import { SelectedLessonType } from "./config";
+
+export interface SidebarProps {
+  expanded: ExpandedState;
+  setExpanded: React.Dispatch<React.SetStateAction<ExpandedState>>;
+  completed: Record<string, boolean>;
+  setSelectedLesson: React.Dispatch<React.SetStateAction<SelectedLessonType>>;
+}
 
 export const Sidebar: React.FC<SidebarProps> = ({
   expanded = {},
   setExpanded,
   completed,
-  setCompleted,
   setSelectedLesson,
 }) => {
   const [expandAll, setExpandAll] = useState<boolean>(true);
-
-  console.log("expanded", expanded);
-  console.log("completed", completed);
 
   const calculateProgress = (sectionIndex: number): number => {
     const section = courseStructure[sectionIndex];
@@ -28,14 +32,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
     );
     const completedItems = section.lessons.reduce(
       (acc, lesson, lessonIndex) => {
-        const lessonCompleted = completed[
-          `lesson-${sectionIndex}-${lessonIndex}`
-        ]
-          ? 1
-          : 0;
+        const lessonCompleted = completed[`${sectionIndex}-${lessonIndex}`] ? 1 : 0;
         const sublessonsCompleted = lesson.sublessons.filter(
           (_, subIndex) =>
-            completed[`sublesson-${sectionIndex}-${lessonIndex}-${subIndex}`]
+            completed[`${sectionIndex}-${lessonIndex}-${subIndex}`]
         ).length;
         return acc + lessonCompleted + sublessonsCompleted;
       },
@@ -86,15 +86,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     <div>
                       <CircleCheckbox
                         checked={completed[`${index}`]}
-                        onCheckedChange={(checked: boolean) =>
-                          setCompleted((prev) => ({
-                            ...prev,
-                            [`${index}`]: checked,
-                          }))
-                        }
+                        readOnly={true}
                       />
                     </div>
-
                     <span className="font-medium ml-2">{section.title}</span>
                   </div>
                   {expanded[index] ? (
@@ -116,27 +110,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                 [`${index}-${lessonIndex}`]:
                                   !prev[`${index}-${lessonIndex}`],
                               }));
-                              setSelectedLesson(
-                                `${index}-${lessonIndex}`
-                              );
+                              setSelectedLesson(`${index}-${lessonIndex}`);
                             }}
                           >
                             <div className="flex items-center">
                               <div>
                                 <CircleCheckbox
-                                  checked={
-                                    completed[`${index}-${lessonIndex}`]
-                                  }
-                                  onCheckedChange={(checked: boolean) =>
-                                    setCompleted((prev) => ({
-                                      ...prev,
-                                      [`${index}-${lessonIndex}`]:
-                                        checked,
-                                    }))
-                                  }
+                                  checked={completed[`${index}-${lessonIndex}`]}
+                                  readOnly={true}
                                 />
                               </div>
-
                               <span className="ml-2">{lesson.title}</span>
                             </div>
                             {expanded[`${index}-${lessonIndex}`] ? (
@@ -164,13 +147,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                           `${index}-${lessonIndex}-${subIndex}`
                                         ]
                                       }
-                                      onCheckedChange={(checked: boolean) =>
-                                        setCompleted((prev) => ({
-                                          ...prev,
-                                          [`${index}-${lessonIndex}-${subIndex}`]:
-                                            checked,
-                                        }))
-                                      }
+                                      readOnly={true}
                                     />
                                   </div>
                                   <span className="ml-2">{sublesson}</span>

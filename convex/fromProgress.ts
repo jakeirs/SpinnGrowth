@@ -2,10 +2,29 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { vSessionId } from "convex-helpers/server/sessions";
 
-/**
- * setSession for the User
- * Make sure to set progress when the membership was created | added access to course
- */
+export const getUserProgress = query({
+  args: { sessionId: vSessionId },
+  handler: async (ctx, args) => {
+    const { sessionId } = args;
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_sessionId", (q) => q.eq("sessionId", sessionId))
+      .first();
+
+    if (!user) {
+      return null;
+    }
+
+    const progressDocument = await ctx.db
+      .query("progress")
+      .filter((q) => q.eq(q.field("userId"), user._id))
+      .first();
+
+    return progressDocument ? progressDocument.progress : [];
+  },
+});
+
 export const setProgressOfProgram = mutation({
   args: {
     lessonCode: v.string(),
@@ -19,7 +38,7 @@ export const setProgressOfProgram = mutation({
     }
 
     if (typeof lessonCode !== "string" || lessonCode.trim() === "") {
-      throw new Error("Invalid userId");
+      throw new Error("Invalid lessonCode");
     }
 
     const existingUser = await ctx.db
@@ -43,13 +62,14 @@ export const setProgressOfProgram = mutation({
     if (!progressDocument) {
       const progressId = await ctx.db.insert("progress", {
         userId: existingUser._id,
-        progress: [],
+        progress: [lessonCode],
       });
 
       return {
         success: true,
         message: "User Progress has been created",
         document: progressId,
+        complete: true,
       };
     }
 
@@ -62,11 +82,10 @@ export const setProgressOfProgram = mutation({
         (lesson) => lesson !== lessonCode
       );
 
-      await ctx.db.patch(progressDocument?._id, { progress: [...newProgress] });
+      await ctx.db.patch(progressDocument._id, { progress: newProgress });
     } else {
       // mark as complete
-
-      await ctx.db.patch(progressDocument?._id, {
+      await ctx.db.patch(progressDocument._id, {
         progress: [lessonCode, ...progressDocument.progress],
       });
     }
