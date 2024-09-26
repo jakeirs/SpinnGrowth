@@ -21,7 +21,11 @@ export const setSessionForUser = mutation({
     const existingUser = await ctx.db.get(userId);
 
     if (!existingUser) {
-      return { success: false, message: "User doesn't exist" };
+      return {
+        success: false,
+        message: "User doesn't exist",
+        document: undefined,
+      };
     }
 
     await ctx.db.patch(userId, { sessionId });
