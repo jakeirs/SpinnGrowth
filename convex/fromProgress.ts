@@ -71,6 +71,6 @@ export const setProgressOfProgram = mutation({
       });
     }
 
-    return { success: true };
+    return { success: true, complete: !isLessonAlreadyComplete };
   },
 });
