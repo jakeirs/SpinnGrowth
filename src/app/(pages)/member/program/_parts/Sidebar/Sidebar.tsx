@@ -17,6 +17,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const [expandAll, setExpandAll] = useState<boolean>(true);
 
+  console.log("expanded", expanded);
+  console.log("completed", completed);
+
   const calculateProgress = (sectionIndex: number): number => {
     const section = courseStructure[sectionIndex];
     const totalItems = section.lessons.reduce(
@@ -76,17 +79,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   className="flex items-center justify-between cursor-pointer p-1"
                   onClick={() => {
                     setExpanded((prev) => ({ ...prev, [index]: !prev[index] }));
-                    setSelectedLesson(`section-${index}`);
+                    setSelectedLesson(`${index}`);
                   }}
                 >
                   <div className="flex items-center">
                     <div>
                       <CircleCheckbox
-                        checked={completed[`section-${index}`]}
+                        checked={completed[`${index}`]}
                         onCheckedChange={(checked: boolean) =>
                           setCompleted((prev) => ({
                             ...prev,
-                            [`section-${index}`]: checked,
+                            [`${index}`]: checked,
                           }))
                         }
                       />
@@ -114,7 +117,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                   !prev[`${index}-${lessonIndex}`],
                               }));
                               setSelectedLesson(
-                                `lesson-${index}-${lessonIndex}`
+                                `${index}-${lessonIndex}`
                               );
                             }}
                           >
@@ -122,12 +125,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                               <div>
                                 <CircleCheckbox
                                   checked={
-                                    completed[`lesson-${index}-${lessonIndex}`]
+                                    completed[`${index}-${lessonIndex}`]
                                   }
                                   onCheckedChange={(checked: boolean) =>
                                     setCompleted((prev) => ({
                                       ...prev,
-                                      [`lesson-${index}-${lessonIndex}`]:
+                                      [`${index}-${lessonIndex}`]:
                                         checked,
                                     }))
                                   }
@@ -150,7 +153,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                   className="flex items-center text-sm text-gray-600 mb-1 cursor-pointer"
                                   onClick={() =>
                                     setSelectedLesson(
-                                      `sublesson-${index}-${lessonIndex}-${subIndex}`
+                                      `${index}-${lessonIndex}-${subIndex}`
                                     )
                                   }
                                 >
@@ -158,13 +161,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                     <CircleCheckbox
                                       checked={
                                         completed[
-                                          `sublesson-${index}-${lessonIndex}-${subIndex}`
+                                          `${index}-${lessonIndex}-${subIndex}`
                                         ]
                                       }
                                       onCheckedChange={(checked: boolean) =>
                                         setCompleted((prev) => ({
                                           ...prev,
-                                          [`sublesson-${index}-${lessonIndex}-${subIndex}`]:
+                                          [`${index}-${lessonIndex}-${subIndex}`]:
                                             checked,
                                         }))
                                       }
