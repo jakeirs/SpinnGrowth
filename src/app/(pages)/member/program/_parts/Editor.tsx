@@ -30,7 +30,7 @@ import {
 import { SelectedLessonType } from "./Sidebar/config";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface EditorProps {
   isAdmin: boolean;
@@ -41,9 +41,13 @@ export const Editor = ({ isAdmin, selectedLesson }: EditorProps) => {
   const saveLessonToDb = useMutation(api.fromLessons.uploadCourseData);
   const takeLessonCourse = useMutation(api.fromLessons.retrieveLessonCourse);
   const [lessonTitle, setLessonTitle] = useState("");
-  const [lessonId, setLessonId] = useState(selectedLesson!);
+  const [lessonId, setLessonId] = useState(selectedLesson || "");
 
-  console.log("selectedLesson", selectedLesson);
+  useEffect(() => {
+    if (selectedLesson) {
+      setLessonId(selectedLesson);
+    }
+  }, [selectedLesson]);
 
   const editor = useEditor({
     extensions: [
@@ -106,7 +110,8 @@ export const Editor = ({ isAdmin, selectedLesson }: EditorProps) => {
 
     if (!document) return;
 
-    const { content } = document;
+    const { content, title } = document;
+    setLessonTitle(title);
     editor.commands.setContent(content);
   };
 
@@ -122,6 +127,7 @@ export const Editor = ({ isAdmin, selectedLesson }: EditorProps) => {
           placeholder="Lesson ID"
           value={lessonId}
           onChange={(e) => setLessonId(e.target.value)}
+          readOnly
         />
       </div>
 
