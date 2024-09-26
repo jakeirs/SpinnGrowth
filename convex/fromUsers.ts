@@ -2,6 +2,9 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { vSessionId } from "convex-helpers/server/sessions";
 
+/**
+ * setSession for the User
+ */
 export const setSessionForUser = mutation({
   args: {
     sessionId: vSessionId,
@@ -34,6 +37,9 @@ export const setSessionForUser = mutation({
   },
 });
 
+/**
+ * getRole of the User
+ */
 export const getRole = query({
   args: {
     sessionId: vSessionId,

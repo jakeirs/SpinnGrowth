@@ -16,14 +16,14 @@ export default defineSchema({
     .index("by_email", ["email"])
     .index("by_sessionId", ["sessionId"]),
 
-  sessions: defineTable({
-    sessionId: vSessionId,
-    userId: v.id("users"),
-  }),
-
   lessons: defineTable({
     lessonId: v.string(),
     title: v.string(),
     content: v.any(),
   }).index("by_lessonId", ["lessonId"]),
+
+  progress: defineTable({
+    userId: v.id("users"),
+    progress: v.array(v.string()),
+  }),
 });
