@@ -8,7 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { CircleCheckbox } from "../CircleCheckbox";
 import { courseStructure, ExpandedState } from "./config";
 import { SelectedLessonType } from "./config";
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export interface SidebarProps {
   expanded: ExpandedState;
@@ -24,7 +24,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
   setSelectedLesson,
 }) => {
   const [expandAll, setExpandAll] = useState<boolean>(true);
-  const router = useRouter();
 
   const calculateProgress = (sectionIndex: number): number => {
     const section = courseStructure[sectionIndex];
@@ -62,11 +61,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
     toggleExpandAll(true);
   }, []);
 
-  const handleNavigation = (selectedLessonId: string) => {
-    setSelectedLesson(selectedLessonId);
-    router.push(`/member/program/${selectedLessonId}`);
-  };
-
   return (
     <ScrollArea className="h-screen w-80 bg-gray-100 p-4">
       <div className="flex items-center justify-between mb-4">
@@ -82,80 +76,90 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className={`mb-4 pt-3 pb-1 ${section.color} rounded-lg`}>
             <div className="flex mb-2 px-4">
               <div className="flex-grow">
-                <div
-                  className="flex items-center justify-between cursor-pointer p-1"
-                  onClick={() => {
-                    setExpanded((prev) => ({ ...prev, [index]: !prev[index] }));
-                    handleNavigation(`${index}`);
-                  }}
-                >
-                  <div className="flex items-center">
-                    <div>
-                      <CircleCheckbox
-                        checked={completed[`${index}`]}
-                        readOnly={true}
-                      />
+                <Link href={`/member/program/${index}`}>
+                  <div
+                    className="flex items-center justify-between cursor-pointer p-1"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setExpanded((prev) => ({ ...prev, [index]: !prev[index] }));
+                      setSelectedLesson(`${index}`);
+                    }}
+                  >
+                    <div className="flex items-center">
+                      <div>
+                        <CircleCheckbox
+                          checked={completed[`${index}`]}
+                          readOnly={true}
+                        />
+                      </div>
+                      <span className="font-medium ml-2">{section.title}</span>
                     </div>
-                    <span className="font-medium ml-2">{section.title}</span>
+                    {expanded[index] ? (
+                      <ChevronDown className="flex-shrink-0" />
+                    ) : (
+                      <ChevronRight className="flex-shrink-0" />
+                    )}
                   </div>
-                  {expanded[index] ? (
-                    <ChevronDown className="flex-shrink-0" />
-                  ) : (
-                    <ChevronRight className="flex-shrink-0" />
-                  )}
-                </div>
+                </Link>
                 {expanded[index] && (
                   <div className="mt-2 pl-2">
                     {section.lessons.map((lesson, lessonIndex) => (
                       <div key={lessonIndex} className="mb-2">
                         <div className="flex-grow">
-                          <div
-                            className="flex items-center justify-between cursor-pointer p-1"
-                            onClick={() => {
-                              setExpanded((prev) => ({
-                                ...prev,
-                                [`${index}-${lessonIndex}`]:
-                                  !prev[`${index}-${lessonIndex}`],
-                              }));
-                              handleNavigation(`${index}-${lessonIndex}`);
-                            }}
-                          >
-                            <div className="flex items-center">
-                              <div>
-                                <CircleCheckbox
-                                  checked={completed[`${index}-${lessonIndex}`]}
-                                  readOnly={true}
-                                />
+                          <Link href={`/member/program/${index}-${lessonIndex}`}>
+                            <div
+                              className="flex items-center justify-between cursor-pointer p-1"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setExpanded((prev) => ({
+                                  ...prev,
+                                  [`${index}-${lessonIndex}`]:
+                                    !prev[`${index}-${lessonIndex}`],
+                                }));
+                                setSelectedLesson(`${index}-${lessonIndex}`);
+                              }}
+                            >
+                              <div className="flex items-center">
+                                <div>
+                                  <CircleCheckbox
+                                    checked={completed[`${index}-${lessonIndex}`]}
+                                    readOnly={true}
+                                  />
+                                </div>
+                                <span className="ml-2">{lesson.title}</span>
                               </div>
-                              <span className="ml-2">{lesson.title}</span>
+                              {expanded[`${index}-${lessonIndex}`] ? (
+                                <ChevronDown size={14} />
+                              ) : (
+                                <ChevronRight size={14} />
+                              )}
                             </div>
-                            {expanded[`${index}-${lessonIndex}`] ? (
-                              <ChevronDown size={14} />
-                            ) : (
-                              <ChevronRight size={14} />
-                            )}
-                          </div>
+                          </Link>
                           {expanded[`${index}-${lessonIndex}`] && (
                             <ul className="mt-1 pl-2">
                               {lesson.sublessons.map((sublesson, subIndex) => (
-                                <li
-                                  key={subIndex}
-                                  className="flex items-center text-sm text-gray-600 mb-1 cursor-pointer"
-                                  onClick={() =>
-                                    handleNavigation(`${index}-${lessonIndex}-${subIndex}`)
-                                  }
-                                >
-                                  <div>
-                                    <CircleCheckbox
-                                      checked={
-                                        completed[
-                                          `${index}-${lessonIndex}-${subIndex}`
-                                        ]
-                                      }
-                                      readOnly={true}
-                                    />
-                                  </div>
-                                  <span className="ml-2">{sublesson}</span>
+                                <li key={subIndex}>
+                                  <Link href={`/member/program/${index}-${lessonIndex}-${subIndex}`}>
+                                    <div
+                                      className="flex items-center text-sm text-gray-600 mb-1 cursor-pointer"
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        setSelectedLesson(`${index}-${lessonIndex}-${subIndex}`);
+                                      }}
+                                    >
+                                      <div>
+                                        <CircleCheckbox
+                                          checked={
+                                            completed[
+                                              `${index}-${lessonIndex}-${subIndex}`
+                                            ]
+                                          }
+                                          readOnly={true}
+                                        />
+                                      </div>
+                                      <span className="ml-2">{sublesson}</span>
+                                    </div>
+                                  </Link>
                                 </li>
                               ))}
                             </ul>
