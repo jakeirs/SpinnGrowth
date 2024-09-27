@@ -8,8 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { CircleCheckbox } from "../CircleCheckbox";
 import { courseStructure, ExpandedState } from "./config";
 import { SelectedLessonType } from "./config";
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import Link from "next/link";
 
 export interface SidebarProps {
   expanded: ExpandedState;
@@ -22,10 +21,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   expanded = {},
   setExpanded,
   completed,
-  setSelectedLesson,
 }) => {
   const [expandAll, setExpandAll] = useState<boolean>(true);
-  const router = useRouter();
 
   const calculateProgress = useMemo(() => {
     return (sectionIndex: number): number => {
@@ -36,7 +33,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
       );
       const completedItems = section.lessons.reduce(
         (acc, lesson, lessonIndex) => {
-          const lessonCompleted = completed[`${sectionIndex}-${lessonIndex}`] ? 1 : 0;
+          const lessonCompleted = completed[`${sectionIndex}-${lessonIndex}`]
+            ? 1
+            : 0;
           const sublessonsCompleted = lesson.sublessons.filter(
             (_, subIndex) =>
               completed[`${sectionIndex}-${lessonIndex}-${subIndex}`]
@@ -67,8 +66,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const handleSectionClick = (index: number) => () => {
     setExpanded((prev) => ({ ...prev, [index]: !prev[index] }));
-    setSelectedLesson(`${index}`);
-    router.push(`/member/program/${index}`);
   };
 
   const handleLessonClick = (index: number, lessonIndex: number) => () => {
@@ -76,13 +73,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
       ...prev,
       [`${index}-${lessonIndex}`]: !prev[`${index}-${lessonIndex}`],
     }));
-    setSelectedLesson(`${index}-${lessonIndex}`);
-    router.push(`/member/program/${index}-${lessonIndex}`);
-  };
-
-  const handleSublessonClick = (index: number, lessonIndex: number, subIndex: number) => () => {
-    setSelectedLesson(`${index}-${lessonIndex}-${subIndex}`);
-    router.push(`/member/program/${index}-${lessonIndex}-${subIndex}`);
   };
 
   return (
@@ -151,11 +141,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             <ul className="mt-1 pl-2">
                               {lesson.sublessons.map((sublesson, subIndex) => (
                                 <li key={subIndex}>
-                                  <Link href={`/member/program/${index}-${lessonIndex}-${subIndex}`}>
-                                    <div
-                                      className="flex items-center text-sm text-gray-600 mb-1 cursor-pointer"
-                                      onClick={handleSublessonClick(index, lessonIndex, subIndex)}
-                                    >
+                                  <Link
+                                    href={`/member/program/${index}-${lessonIndex}-${subIndex}`}
+                                  >
+                                    <div className="flex items-center text-sm text-gray-600 mb-1 cursor-pointer">
                                       <div>
                                         <CircleCheckbox
                                           checked={
