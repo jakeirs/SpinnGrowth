@@ -87,18 +87,20 @@ export const SectionItem: FC<SectionItemProps> = ({ title }) => {
                   notes={lesson.notes || undefined}
                   subLessons={[
                     {
-                      title: "Sub Lesson 1",
+                      title: "Sub Lesson 1Su",
                       checked: false,
-                      onToggle: () => {
-                        /* handle sub lesson 1 toggle */
-                      },
                     },
                     {
                       title: "Sub Lesson 2",
                       checked: true,
-                      onToggle: () => {
-                        /* handle sub lesson 2 toggle */
-                      },
+                    },
+                    {
+                      title: "Sub Lesson 2",
+                      checked: true,
+                    },
+                    {
+                      title: "Sub Lesson 2",
+                      checked: true,
                     },
                   ]}
                   checked={false}

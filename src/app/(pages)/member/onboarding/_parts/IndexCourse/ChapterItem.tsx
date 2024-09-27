@@ -88,7 +88,11 @@ export const ChapterItem: FC<ChapterItemProps> = ({
             className="overflow-hidden"
           >
             {subLessons.map((subLesson, index) => (
-              <LessonItem key={index} {...subLesson} />
+              <LessonItem
+                key={index}
+                {...subLesson}
+                isLast={subLessons.length === index + 1}
+              />
             ))}
           </motion.div>
         )}
