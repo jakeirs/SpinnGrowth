@@ -17,10 +17,10 @@ export default defineSchema({
     .index("by_sessionId", ["sessionId"]),
 
   lessons: defineTable({
-    lessonId: v.string(),
+    lessonCode: v.string(),
     title: v.string(),
     content: v.any(),
-  }).index("by_lessonId", ["lessonId"]),
+  }).index("by_lessonCode", ["lessonCode"]),
 
   progress: defineTable({
     userId: v.id("users"),

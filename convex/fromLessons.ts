@@ -1,16 +1,17 @@
-import { mutation } from "./_generated/server";
+import { Lesson } from "./../src/app/(pages)/member/program/_parts/Sidebar/config";
+import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
 export const uploadCourseData = mutation({
   args: {
-    lessonId: v.string(),
+    lessonCode: v.string(),
     title: v.string(),
     content: v.any(),
   },
   handler: async (ctx, args) => {
-    const { title, lessonId, content } = args;
+    const { title, lessonCode, content } = args;
 
-    if (typeof lessonId !== "string" || lessonId.trim() === "") {
+    if (typeof lessonCode !== "string" || lessonCode.trim() === "") {
       throw new Error("Invalid lessonId");
     }
 
@@ -24,13 +25,13 @@ export const uploadCourseData = mutation({
 
     const existing = await ctx.db
       .query("lessons")
-      .filter((q) => q.eq(q.field("lessonId"), lessonId))
+      .filter((q) => q.eq(q.field("lessonCode"), lessonCode))
       .first();
 
     if (existing) {
       try {
         await ctx.db.patch(existing._id, {
-          lessonId,
+          lessonCode,
           content,
           title,
         });
@@ -44,7 +45,7 @@ export const uploadCourseData = mutation({
 
     try {
       const lessonRecordId = await ctx.db.insert("lessons", {
-        lessonId,
+        lessonCode,
         content,
         title,
       });
@@ -64,18 +65,44 @@ export const retrieveLessonCourse = mutation({
     const { lessonId } = args;
 
     if (typeof lessonId !== "string" || lessonId.trim() === "") {
-      throw new Error("Invalid lessonId");
+      throw new Error("Invalid lessonCode");
     }
 
     try {
       const document = await ctx.db
         .query("lessons")
-        .filter((q) => q.eq(q.field("lessonId"), lessonId))
+        .filter((q) => q.eq(q.field("lessonCode"), lessonId))
         .first();
 
       return { success: true, document };
     } catch (err) {
       console.error("Error querying lesson course", err);
+      throw err;
+    }
+  },
+});
+
+/**
+ * Query Lesson by lessonId
+ */
+export const getLessonById = query({
+  args: { lessonId: v.string() },
+  handler: async (ctx, args) => {
+    const { lessonId } = args;
+
+    if (typeof lessonId !== "string" || lessonId.trim() === "") {
+      throw new Error("Invalid lessonCode");
+    }
+
+    try {
+      const lesson = await ctx.db
+        .query("lessons")
+        .withIndex("by_lessonCode", (q) => q.eq("lessonCode", lessonId))
+        .first();
+
+      return lesson;
+    } catch (err) {
+      console.error("Error querying lesson by id", err);
       throw err;
     }
   },

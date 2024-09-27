@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { CircleCheckbox } from "../CircleCheckbox";
 import { courseStructure, ExpandedState } from "./config";
 import { SelectedLessonType } from "./config";
+import { useRouter } from 'next/navigation';
 
 export interface SidebarProps {
   expanded: ExpandedState;
@@ -23,6 +24,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   setSelectedLesson,
 }) => {
   const [expandAll, setExpandAll] = useState<boolean>(true);
+  const router = useRouter();
 
   const calculateProgress = (sectionIndex: number): number => {
     const section = courseStructure[sectionIndex];
@@ -60,6 +62,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
     toggleExpandAll(true);
   }, []);
 
+  const handleNavigation = (selectedLessonId: string) => {
+    setSelectedLesson(selectedLessonId);
+    router.push(`/member/program/${selectedLessonId}`);
+  };
+
   return (
     <ScrollArea className="h-screen w-80 bg-gray-100 p-4">
       <div className="flex items-center justify-between mb-4">
@@ -79,7 +86,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   className="flex items-center justify-between cursor-pointer p-1"
                   onClick={() => {
                     setExpanded((prev) => ({ ...prev, [index]: !prev[index] }));
-                    setSelectedLesson(`${index}`);
+                    handleNavigation(`${index}`);
                   }}
                 >
                   <div className="flex items-center">
@@ -110,7 +117,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                 [`${index}-${lessonIndex}`]:
                                   !prev[`${index}-${lessonIndex}`],
                               }));
-                              setSelectedLesson(`${index}-${lessonIndex}`);
+                              handleNavigation(`${index}-${lessonIndex}`);
                             }}
                           >
                             <div className="flex items-center">
@@ -135,9 +142,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                   key={subIndex}
                                   className="flex items-center text-sm text-gray-600 mb-1 cursor-pointer"
                                   onClick={() =>
-                                    setSelectedLesson(
-                                      `${index}-${lessonIndex}-${subIndex}`
-                                    )
+                                    handleNavigation(`${index}-${lessonIndex}-${subIndex}`)
                                   }
                                 >
                                   <div>
