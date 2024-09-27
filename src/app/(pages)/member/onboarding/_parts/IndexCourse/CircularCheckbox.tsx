@@ -3,12 +3,10 @@ import { FC } from "react";
 interface CircularCheckboxProps {
   checked: boolean;
   size?: "small" | "medium" | "large" | number;
-  onChange: () => void;
 }
 
 export const CircularCheckbox: FC<CircularCheckboxProps> = ({
   checked,
-  onChange,
   size = "small",
 }) => {
   const getSizeClasses = (size: "small" | "medium" | "large" | number) => {
@@ -50,7 +48,6 @@ export const CircularCheckbox: FC<CircularCheckboxProps> = ({
     <div
       className={`${sizeClasses} rounded-full border-2 flex items-center justify-center cursor-pointer
                   ${checked ? "bg-blue-300 border-blue-300" : "border-gray-300"}`}
-      onClick={onChange}
     >
       {checked && (
         <svg
