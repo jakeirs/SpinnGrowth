@@ -2,26 +2,59 @@ import { FC } from "react";
 
 interface CircularCheckboxProps {
   checked: boolean;
-  size?: string;
+  size?: "small" | "medium" | "large" | number;
   onChange: () => void;
 }
 
 export const CircularCheckbox: FC<CircularCheckboxProps> = ({
   checked,
   onChange,
-  size: sizeNumber = 6,
+  size = "small",
 }) => {
-  const size = String(sizeNumber);
+  const getSizeClasses = (size: "small" | "medium" | "large" | number) => {
+    if (typeof size === "number") {
+      return `w-${size} h-${size}`;
+    }
+    switch (size) {
+      case "small":
+        return "w-6 h-6";
+      case "medium":
+        return "w-8 h-8";
+      case "large":
+        return "w-9 h-9";
+      default:
+        return "w-6 h-6";
+    }
+  };
+
+  const getIconSizeClasses = (size: "small" | "medium" | "large" | number) => {
+    if (typeof size === "number") {
+      return `w-${Math.max(4, size - 2)} h-${Math.max(4, size - 2)}`;
+    }
+    switch (size) {
+      case "small":
+        return "w-4 h-4";
+      case "medium":
+        return "w-5 h-5";
+      case "large":
+        return "w-6 h-6";
+      default:
+        return "w-4 h-4";
+    }
+  };
+
+  const sizeClasses = getSizeClasses(size);
+  const iconSizeClasses = getIconSizeClasses(size);
 
   return (
     <div
-      className={`w-${size} h-${size} rounded-full border-2 flex items-center justify-center cursor-pointer
-                  ${checked ? "bg-blue-500 border-blue-500" : "border-gray-300"}`}
+      className={`${sizeClasses} rounded-full border-2 flex items-center justify-center cursor-pointer
+                  ${checked ? "bg-blue-300 border-blue-300" : "border-gray-300"}`}
       onClick={onChange}
     >
       {checked && (
         <svg
-          className="w-4 h-4 text-white"
+          className={`${iconSizeClasses} text-white`}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"

@@ -27,8 +27,12 @@ export const ChapterItem: FC<ChapterItemProps> = ({
         className="flex items-center py-3 px-4 cursor-pointer"
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <div className="w-10 flex-shrink-0 flex justify-center">
-          <CircularCheckbox checked={checked} onChange={onToggle} />
+        <div className="w-10 flex justify-center">
+          <CircularCheckbox
+            checked={checked}
+            onChange={onToggle}
+            size="medium"
+          />
         </div>
         <div className="ml-4 flex-grow">
           <h3 className="text-base font-semibold text-gray-900">{title}</h3>
