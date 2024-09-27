@@ -2,12 +2,14 @@
 import { FC, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CircularCheckbox } from "./CircularCheckbox";
+import { SubLessonItem, SubLessonProps } from "./SubLessonItem.";
 
 interface LessonItemProps {
   title: string;
   notes?: string;
   checked: boolean;
   onToggle: () => void;
+  subLessons?: SubLessonProps[];
 }
 
 export const LessonItem: FC<LessonItemProps> = ({
@@ -15,6 +17,7 @@ export const LessonItem: FC<LessonItemProps> = ({
   notes,
   checked,
   onToggle,
+  subLessons = [],
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -29,37 +32,8 @@ export const LessonItem: FC<LessonItemProps> = ({
         </div>
         <div className="ml-4 flex-grow">
           <h3 className="text-base font-semibold text-gray-900">{title}</h3>
-        </div>
-        <motion.div
-          initial={false}
-          animate={{ rotate: isExpanded ? 180 : 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <svg
-            className="w-5 h-5 text-gray-500"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
-        </motion.div>
-      </div>
-      <AnimatePresence>
-        {isExpanded && notes && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.15 }}
-            className="px-4 pb-3 overflow-hidden"
-          >
-            <div className="flex items-center text-xs text-gray-500">
+          {notes && (
+            <div className="flex items-center mt-1 text-xs text-gray-500">
               <svg
                 className="w-3 h-3 mr-1"
                 fill="none"
@@ -75,6 +49,42 @@ export const LessonItem: FC<LessonItemProps> = ({
               </svg>
               <span>Notes: {notes}</span>
             </div>
+          )}
+        </div>
+        {subLessons.length > 0 && (
+          <motion.div
+            initial={false}
+            animate={{ rotate: isExpanded ? 180 : 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <svg
+              className="w-5 h-5 text-gray-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </motion.div>
+        )}
+      </div>
+      <AnimatePresence>
+        {isExpanded && subLessons.length > 0 && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="overflow-hidden"
+          >
+            {subLessons.map((subLesson, index) => (
+              <SubLessonItem key={index} {...subLesson} />
+            ))}
           </motion.div>
         )}
       </AnimatePresence>

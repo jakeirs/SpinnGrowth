@@ -45,6 +45,22 @@ export const Drawer: FC = () => {
             key={lesson.id}
             title={lesson.title}
             notes={lesson.notes || undefined}
+            subLessons={[
+              {
+                title: "Sub Lesson 1",
+                checked: false,
+                onToggle: () => {
+                  /* handle sub lesson 1 toggle */
+                },
+              },
+              {
+                title: "Sub Lesson 2",
+                checked: true,
+                onToggle: () => {
+                  /* handle sub lesson 2 toggle */
+                },
+              },
+            ]}
             checked={false}
             onToggle={() => {}}
           />
