@@ -88,14 +88,17 @@ export const SectionItem: FC<SectionItemProps> = ({ title }) => {
                   subLessons={[
                     {
                       title: "Sub Lesson 1Su",
+                      notes: "It has some important notes",
                       checked: false,
                     },
                     {
-                      title: "Sub Lesson 2",
+                      title: "Sub Lesson 1SuSub Lesson 1SuSub Lesson 1Su",
+                      notes: "It has some important notes",
+
                       checked: true,
                     },
                     {
-                      title: "Sub Lesson 2",
+                      title: "Sub Lesson 1SuSub Lesson 1SuSub Lesson 1Su",
                       checked: true,
                     },
                     {
