@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -9,6 +9,7 @@ import { CircleCheckbox } from "../CircleCheckbox";
 import { courseStructure, ExpandedState } from "./config";
 import { SelectedLessonType } from "./config";
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export interface SidebarProps {
   expanded: ExpandedState;
@@ -24,26 +25,29 @@ export const Sidebar: React.FC<SidebarProps> = ({
   setSelectedLesson,
 }) => {
   const [expandAll, setExpandAll] = useState<boolean>(true);
+  const router = useRouter();
 
-  const calculateProgress = (sectionIndex: number): number => {
-    const section = courseStructure[sectionIndex];
-    const totalItems = section.lessons.reduce(
-      (acc, lesson) => acc + lesson.sublessons.length + 1,
-      0
-    );
-    const completedItems = section.lessons.reduce(
-      (acc, lesson, lessonIndex) => {
-        const lessonCompleted = completed[`${sectionIndex}-${lessonIndex}`] ? 1 : 0;
-        const sublessonsCompleted = lesson.sublessons.filter(
-          (_, subIndex) =>
-            completed[`${sectionIndex}-${lessonIndex}-${subIndex}`]
-        ).length;
-        return acc + lessonCompleted + sublessonsCompleted;
-      },
-      0
-    );
-    return (completedItems / totalItems) * 100;
-  };
+  const calculateProgress = useMemo(() => {
+    return (sectionIndex: number): number => {
+      const section = courseStructure[sectionIndex];
+      const totalItems = section.lessons.reduce(
+        (acc, lesson) => acc + lesson.sublessons.length + 1,
+        0
+      );
+      const completedItems = section.lessons.reduce(
+        (acc, lesson, lessonIndex) => {
+          const lessonCompleted = completed[`${sectionIndex}-${lessonIndex}`] ? 1 : 0;
+          const sublessonsCompleted = lesson.sublessons.filter(
+            (_, subIndex) =>
+              completed[`${sectionIndex}-${lessonIndex}-${subIndex}`]
+          ).length;
+          return acc + lessonCompleted + sublessonsCompleted;
+        },
+        0
+      );
+      return (completedItems / totalItems) * 100;
+    };
+  }, [completed]);
 
   const toggleExpandAll = (checked: boolean) => {
     setExpandAll(checked);
@@ -60,6 +64,26 @@ export const Sidebar: React.FC<SidebarProps> = ({
   useEffect(() => {
     toggleExpandAll(true);
   }, []);
+
+  const handleSectionClick = (index: number) => () => {
+    setExpanded((prev) => ({ ...prev, [index]: !prev[index] }));
+    setSelectedLesson(`${index}`);
+    router.push(`/member/program/${index}`);
+  };
+
+  const handleLessonClick = (index: number, lessonIndex: number) => () => {
+    setExpanded((prev) => ({
+      ...prev,
+      [`${index}-${lessonIndex}`]: !prev[`${index}-${lessonIndex}`],
+    }));
+    setSelectedLesson(`${index}-${lessonIndex}`);
+    router.push(`/member/program/${index}-${lessonIndex}`);
+  };
+
+  const handleSublessonClick = (index: number, lessonIndex: number, subIndex: number) => () => {
+    setSelectedLesson(`${index}-${lessonIndex}-${subIndex}`);
+    router.push(`/member/program/${index}-${lessonIndex}-${subIndex}`);
+  };
 
   return (
     <ScrollArea className="h-screen w-80 bg-gray-100 p-4">
@@ -79,11 +103,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <Link href={`/member/program/${index}`}>
                   <div
                     className="flex items-center justify-between cursor-pointer p-1"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setExpanded((prev) => ({ ...prev, [index]: !prev[index] }));
-                      setSelectedLesson(`${index}`);
-                    }}
+                    onClick={handleSectionClick(index)}
                   >
                     <div className="flex items-center">
                       <div>
@@ -109,15 +129,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                           <Link href={`/member/program/${index}-${lessonIndex}`}>
                             <div
                               className="flex items-center justify-between cursor-pointer p-1"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                setExpanded((prev) => ({
-                                  ...prev,
-                                  [`${index}-${lessonIndex}`]:
-                                    !prev[`${index}-${lessonIndex}`],
-                                }));
-                                setSelectedLesson(`${index}-${lessonIndex}`);
-                              }}
+                              onClick={handleLessonClick(index, lessonIndex)}
                             >
                               <div className="flex items-center">
                                 <div>
@@ -142,10 +154,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                   <Link href={`/member/program/${index}-${lessonIndex}-${subIndex}`}>
                                     <div
                                       className="flex items-center text-sm text-gray-600 mb-1 cursor-pointer"
-                                      onClick={(e) => {
-                                        e.preventDefault();
-                                        setSelectedLesson(`${index}-${lessonIndex}-${subIndex}`);
-                                      }}
+                                      onClick={handleSublessonClick(index, lessonIndex, subIndex)}
                                     >
                                       <div>
                                         <CircleCheckbox
