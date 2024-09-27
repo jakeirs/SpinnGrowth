@@ -2,17 +2,17 @@
 import { FC, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CircularCheckbox } from "./CircularCheckbox";
-import { SubLessonItem, SubLessonProps } from "./SubLessonItem.";
+import { LessonItem, LessonProps } from "./LessonItem";
 
-interface LessonItemProps {
+interface ChapterItemProps {
   title: string;
   notes?: string;
   checked: boolean;
   onToggle: () => void;
-  subLessons?: SubLessonProps[];
+  subLessons?: LessonProps[];
 }
 
-export const LessonItem: FC<LessonItemProps> = ({
+export const ChapterItem: FC<ChapterItemProps> = ({
   title,
   notes,
   checked,
@@ -83,7 +83,7 @@ export const LessonItem: FC<LessonItemProps> = ({
             className="overflow-hidden"
           >
             {subLessons.map((subLesson, index) => (
-              <SubLessonItem key={index} {...subLesson} />
+              <LessonItem key={index} {...subLesson} />
             ))}
           </motion.div>
         )}
