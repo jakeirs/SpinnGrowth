@@ -10,7 +10,7 @@ export interface SectionItemProps {
 export const SectionItem: FC<SectionItemProps> = ({ title }) => {
   const [isExpanded, setIsExpanded] = useState(true);
 
-  const lessons = [
+  const chapters = [
     {
       id: 1,
       title: "Growth Principles",
@@ -80,12 +80,12 @@ export const SectionItem: FC<SectionItemProps> = ({ title }) => {
             className="overflow-hidden"
           >
             <div className="">
-              {lessons.map((lesson) => (
+              {chapters.map((chapter) => (
                 <ChapterItem
-                  key={lesson.id}
-                  title={lesson.title}
+                  key={chapter.id}
+                  title={chapter.title}
                   lessonCode={"0-0"}
-                  notes={lesson.notes || undefined}
+                  notes={chapter.notes || undefined}
                   lessons={[
                     {
                       title: "Sub Lesson 1Su",
