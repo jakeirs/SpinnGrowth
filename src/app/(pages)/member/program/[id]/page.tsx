@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { Switch } from "@/components/ui/switch";
-import { Sidebar } from "../_parts/Sidebar/Sidebar";
 import { SelectedLessonType } from "../_parts/Sidebar/config";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -19,7 +18,6 @@ export default function CoursePage() {
   const isAdmin = userRole?.role === "admin";
 
   const [isAdminSwitch, setIsAdminSwitch] = useState(isAdmin);
-  const [expanded, setExpanded] = useState({});
   const [completed, setCompleted] = useState<Record<string, boolean>>({});
   const [selectedLesson, setSelectedLesson] =
     useState<SelectedLessonType>(selectedLessonId);

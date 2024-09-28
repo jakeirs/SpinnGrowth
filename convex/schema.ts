@@ -3,6 +3,11 @@ import { vSessionId } from "convex-helpers/server/sessions";
 import { v } from "convex/values";
 
 export const RolesEnum = v.union(v.literal("admin"), v.literal("member"));
+export const LessonsType = v.union(
+  v.literal("section"),
+  v.literal("chapter"),
+  v.literal("lesson")
+);
 
 export default defineSchema({
   users: defineTable({
@@ -18,6 +23,7 @@ export default defineSchema({
 
   lessons: defineTable({
     lessonCode: v.string(),
+    type: v.optional(LessonsType),
     title: v.string(),
     content: v.optional(v.any()),
     notes: v.optional(v.string()),
