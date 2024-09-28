@@ -41,7 +41,7 @@ export const SectionItem: FC<SectionItemProps> = ({ title }) => {
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <div className="flex justify-between items-center">
-          <h2 className="text-xl font-bold text-gray-900">{title}</h2>
+          <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
           <motion.div
             initial={false}
             animate={{ rotate: isExpanded ? 180 : 0 }}
@@ -92,9 +92,9 @@ export const SectionItem: FC<SectionItemProps> = ({ title }) => {
                       checked: false,
                     },
                     {
-                      title: "Sub Lesson 1SuSub Lesson 1SuSub Lesson 1Su",
-                      notes:
-                        "It has some important notes Imporsome important notes Imporsome important notes Impor",
+                      title:
+                        "Sub Lesson 1SuSub Lesson 1SuSub Lesson 1Su1Su1Su 1Su1Su 1Su1Su",
+                      notes: "It has some important notes Imporsome ",
 
                       checked: true,
                     },
