@@ -52,8 +52,8 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
   };
 
   const onClickSaveLessonContent = async () => {
-    if (!lessonCode || !editor) {
-      console.log("lessonCode", lessonCode, editor);
+    if (!inputLessonId || !editor) {
+      console.log("lessonCode", inputLessonId, editor);
       throw new Error(
         "No Selected Lesson Id Provided or Editor not initialized"
       );
@@ -63,7 +63,7 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
 
     try {
       const result = await saveLessonToDb({
-        lessonCode,
+        lessonCode: inputLessonId,
         content: json,
         title: inputTitle, // Now using the title state
       });
