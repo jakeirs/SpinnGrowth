@@ -24,7 +24,7 @@ export const ChapterItem: FC<ChapterItemProps> = ({
   return (
     <div className="border-b border-gray-200 bg-white">
       <div
-        className="flex items-center py-3 px-4 cursor-pointer"
+        className="flex items-center py-3 px-4 cursor-pointer hover:bg-gray-50 transition-colors duration-200"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <div className="min-w-[40px] flex justify-center">
