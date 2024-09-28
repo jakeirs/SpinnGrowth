@@ -19,7 +19,7 @@ export const LessonItem: FC<LessonProps> = ({
   const trimmedNotes = trimText(notes);
 
   return (
-    <div className="flex items-center py-3 px-4 h-20 cursor-pointer hover:bg-gray-100 transition-colors duration-200">
+    <div className="flex items-center py-3 px-4 h-20 cursor-pointer hover:bg-gray-200 transition-colors duration-150">
       <div className="min-w-[40px] flex justify-center relative">
         <CircularCheckbox checked={checked} />
         {!isLast && (

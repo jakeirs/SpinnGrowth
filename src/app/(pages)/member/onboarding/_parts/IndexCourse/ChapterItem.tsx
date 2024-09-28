@@ -33,7 +33,7 @@ export const ChapterItem: FC<ChapterItemProps> = ({
       <div
         className={clsx(
           "flex items-center py-4 px-4 cursor-pointer transition-colors duration-300 border-b border-gray-200",
-          isExpanded ? "bg-gray-100 border-b-2" : "hover:bg-gray-50"
+          isExpanded ? "bg-gray-100 border-b-2  " : "hover:bg-gray-50"
         )}
         onClick={() => setIsExpanded(!isExpanded)}
       >
