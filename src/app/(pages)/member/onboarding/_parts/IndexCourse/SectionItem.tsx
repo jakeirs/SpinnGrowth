@@ -84,26 +84,30 @@ export const SectionItem: FC<SectionItemProps> = ({ title }) => {
                 <ChapterItem
                   key={lesson.id}
                   title={lesson.title}
+                  lessonCode={"0-0"}
                   notes={lesson.notes || undefined}
-                  subLessons={[
+                  lessons={[
                     {
                       title: "Sub Lesson 1Su",
                       notes: "It has some important notes",
+                      lessonCode: "0-0-0",
                       checked: false,
                     },
                     {
                       title:
                         "Sub Lesson 1SuSub Lesson 1SuSub Lesson 1Su1Su1Su 1Su1Su 1Su1Su",
                       notes: "It has some important notes Imporsome ",
-
+                      lessonCode: "0-0-1",
                       checked: true,
                     },
                     {
                       title: "Sub Lesson 1SuSub Lesson 1SuSub Lesson 1Su",
+                      lessonCode: "0-0-2",
                       checked: true,
                     },
                     {
                       title: "Sub Lesson 2",
+                      lessonCode: "0-0-3",
                       checked: true,
                     },
                   ]}

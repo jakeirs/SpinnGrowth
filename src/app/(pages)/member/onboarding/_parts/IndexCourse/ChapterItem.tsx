@@ -5,20 +5,24 @@ import clsx from "clsx";
 import { CircularCheckbox } from "./CircularCheckbox";
 import { LessonItem, LessonProps } from "./LessonItem";
 import { LessonNotes } from "./Notes";
+import Link from "next/link";
+import { ROUTE_NAMES } from "@/app/(pages)/routes";
 
 interface ChapterItemProps {
   title: string;
+  lessonCode: string;
   notes?: string;
   checked: boolean;
   onToggle: () => void;
-  subLessons?: LessonProps[];
+  lessons?: LessonProps[];
 }
 
 export const ChapterItem: FC<ChapterItemProps> = ({
   title,
   notes,
   checked,
-  subLessons = [],
+  lessonCode,
+  lessons = [],
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -46,7 +50,7 @@ export const ChapterItem: FC<ChapterItemProps> = ({
             {notes && <LessonNotes notes={notes} />}
           </div>
           {/** COLLAPSABLE ARROW */}
-          {subLessons.length > 0 && (
+          {lessons.length > 0 && (
             <motion.div
               className="w-auto"
               initial={false}
@@ -71,7 +75,7 @@ export const ChapterItem: FC<ChapterItemProps> = ({
         </div>
       </div>
       <AnimatePresence>
-        {isExpanded && subLessons.length > 0 && (
+        {isExpanded && lessons.length > 0 && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
@@ -79,12 +83,16 @@ export const ChapterItem: FC<ChapterItemProps> = ({
             transition={{ duration: 0.3 }}
             className="overflow-hidden bg-gray-100"
           >
-            {subLessons.map((subLesson, index) => (
-              <LessonItem
-                key={index}
-                {...subLesson}
-                isLast={subLessons.length === index + 1}
-              />
+            {lessons.map((lesson, index) => (
+              <Link
+                href={`/member/${ROUTE_NAMES.MemberProgram}/${lesson.lessonCode}`}
+              >
+                <LessonItem
+                  key={index}
+                  {...lesson}
+                  isLast={lessons.length === index + 1}
+                />
+              </Link>
             ))}
           </motion.div>
         )}

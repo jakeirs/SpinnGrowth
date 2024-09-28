@@ -5,6 +5,7 @@ import { trimText } from "./Notes";
 export interface LessonProps {
   title: string;
   notes?: string;
+  lessonCode: string;
   checked?: boolean;
   isLast?: boolean;
 }
