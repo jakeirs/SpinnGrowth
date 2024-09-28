@@ -5,7 +5,7 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
-import { CircleCheckbox } from "../CircleCheckbox";
+import { CircleCheckbox } from "./CircleCheckbox";
 import { courseStructure, ExpandedState } from "./config";
 import { SelectedLessonType } from "./config";
 import Link from "next/link";

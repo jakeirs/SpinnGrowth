@@ -1,5 +1,6 @@
 import { FC } from "react";
 import { SectionItem } from "./SectionItem";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export const CourseIndex: FC = () => {
   const sections = [
@@ -27,10 +28,10 @@ export const CourseIndex: FC = () => {
   ];
 
   return (
-    <div className="w-full md:w-[420px] bg-gray-100 shadow-lg flex flex-col h-screen">
+    <ScrollArea className="w-full md:w-[420px] bg-gray-100 shadow-lg flex flex-col h-screen">
       {sections.map((section) => (
         <SectionItem key={section.id} title={section.title} />
       ))}
-    </div>
+    </ScrollArea>
   );
 };

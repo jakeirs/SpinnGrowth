@@ -73,12 +73,6 @@ export default function CoursePage() {
   };
   return (
     <div className="flex h-screen">
-      <Sidebar
-        expanded={expanded}
-        setExpanded={setExpanded}
-        completed={completed}
-        setSelectedLesson={setSelectedLesson}
-      />
       <main className="flex-1 p-6 flex flex-col">
         <div className="flex justify-end mb-4">
           {isAdmin ? (
