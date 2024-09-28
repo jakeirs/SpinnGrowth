@@ -1,4 +1,4 @@
-import { CourseIndex } from "../../onboarding/_parts/IndexCourse/CourseIndex";
+import { CourseIndex } from "../onboarding/_parts/IndexCourse/CourseIndex";
 
 export default function IndexPageLayout({
   children,
