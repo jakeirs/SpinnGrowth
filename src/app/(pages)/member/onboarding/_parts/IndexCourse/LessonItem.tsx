@@ -26,7 +26,7 @@ export const LessonItem: FC<LessonProps> = ({
           <div className="border-r-2 border-gray-400 h-8 w-7 absolute -bottom-11 -left-1/2 translate-x-1/2"></div>
         )}
       </div>
-      <div className="ml-2 p-1">
+      <div className="ml-4 p-1">
         <h3 className="ml-3 text-lg text-left leading-none">{trimmedTitle}</h3>
 
         {notes && (
