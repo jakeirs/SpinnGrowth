@@ -18,7 +18,6 @@ export const ChapterItem: FC<ChapterItemProps> = ({
   title,
   notes,
   checked,
-  onToggle,
   subLessons = [],
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
