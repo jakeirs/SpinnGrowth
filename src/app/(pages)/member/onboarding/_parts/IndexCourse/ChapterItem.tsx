@@ -3,6 +3,7 @@ import { FC, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CircularCheckbox } from "./CircularCheckbox";
 import { LessonItem, LessonProps } from "./LessonItem";
+import { LessonNotes } from "./Notes";
 
 interface ChapterItemProps {
   title: string;
@@ -24,7 +25,7 @@ export const ChapterItem: FC<ChapterItemProps> = ({
   return (
     <div className="border-b border-gray-200 bg-white">
       <div
-        className="flex items-center py-3 px-4 cursor-pointer hover:bg-gray-50 transition-colors duration-200"
+        className="flex items-center py-4 px-4 cursor-pointer hover:bg-gray-50 transition-colors duration-200"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <div className="min-w-[40px] flex justify-center">
@@ -33,25 +34,8 @@ export const ChapterItem: FC<ChapterItemProps> = ({
         {/** TITLE ITEM */}
         <div className="ml-4 flex items-center justify-between w-full">
           <div>
-            <h3 className="text-xl font-medium text-gray-900">{title}</h3>
-            {notes && (
-              <div className="flex items-center mt-1 text-xs text-gray-500">
-                <svg
-                  className="w-3 h-3 mr-1"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                  />
-                </svg>
-                <span>Notes: {notes}</span>
-              </div>
-            )}
+            <h3 className="text-2xl font-medium text-gray-900">{title}</h3>
+            {notes && <LessonNotes notes={notes} />}
           </div>
           {/** COLLAPSABLE ARROW */}
           {subLessons.length > 0 && (

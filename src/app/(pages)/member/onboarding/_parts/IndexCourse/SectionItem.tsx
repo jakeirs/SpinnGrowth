@@ -93,7 +93,8 @@ export const SectionItem: FC<SectionItemProps> = ({ title }) => {
                     },
                     {
                       title: "Sub Lesson 1SuSub Lesson 1SuSub Lesson 1Su",
-                      notes: "It has some important notes",
+                      notes:
+                        "It has some important notes Imporsome important notes Imporsome important notes Impor",
 
                       checked: true,
                     },
