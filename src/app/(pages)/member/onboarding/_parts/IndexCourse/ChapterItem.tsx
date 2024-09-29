@@ -7,6 +7,8 @@ import { LessonItem, LessonProps } from "./LessonItem";
 import { LessonNotes } from "./Notes";
 import Link from "next/link";
 import { ROUTE_NAMES } from "@/app/(pages)/routes";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 interface ChapterItemProps {
   title: string;
@@ -14,7 +16,7 @@ interface ChapterItemProps {
   notes?: string;
   checked: boolean;
   onToggle: () => void;
-  lessons?: LessonProps[];
+  // lessons?: LessonProps[];
 }
 
 export const ChapterItem: FC<ChapterItemProps> = ({
@@ -22,9 +24,15 @@ export const ChapterItem: FC<ChapterItemProps> = ({
   notes,
   checked,
   lessonCode,
-  lessons = [],
+  // lessons = [],
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+
+  const lessons = useQuery(api.fromLessons.getLessonsForChapter, {
+    chapterCode: lessonCode,
+  });
+
+  console.log("lessons", lessons);
 
   return (
     <div
@@ -54,7 +62,7 @@ export const ChapterItem: FC<ChapterItemProps> = ({
             {notes && <LessonNotes notes={notes} />}
           </div>
           {/** COLLAPSABLE ARROW */}
-          {lessons.length > 0 && (
+          {lessons && lessons.length > 0 && (
             <motion.div
               className="w-auto"
               initial={false}
@@ -79,7 +87,7 @@ export const ChapterItem: FC<ChapterItemProps> = ({
         </div>
       </div>
       <AnimatePresence>
-        {isExpanded && lessons.length > 0 && (
+        {isExpanded && lessons && lessons.length > 0 && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}

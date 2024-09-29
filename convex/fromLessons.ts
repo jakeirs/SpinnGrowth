@@ -195,6 +195,30 @@ export const getAllLessons = query({
   },
 });
 
+export const getLessonsForChapter = query({
+  args: {
+    chapterCode: v.string(),
+  },
+  handler: async (ctx, { chapterCode }) => {
+    try {
+      const lessons = await ctx.db
+        .query("lessons")
+        .filter((q) =>
+          q.and(
+            q.gte(q.field("lessonCode"), `${chapterCode}-0`),
+            q.lte(q.field("lessonCode"), `${chapterCode}-99`)
+          )
+        )
+        .order("asc")
+        .collect();
+      return lessons;
+    } catch (err) {
+      console.error("Error querying filtered lessons", err);
+      throw err;
+    }
+  },
+});
+
 // Transform function to structure data for CourseIndex component
 export const transformLessonsForCourseIndex = (
   lessons: Doc<"lessons">[]
@@ -253,10 +277,4 @@ export const transformLessonsForCourseIndex = (
   });
 
   return sections;
-
-  // return Object.entries(sections).map(([sectionCode, lessons]) => ({
-  //   id: sectionCode,
-  //   title: `Section ${sectionCode}`,
-  //   lessons: lessons.sort((a, b) => a.lessonCode.localeCompare(b.lessonCode)),
-  // }));
 };
