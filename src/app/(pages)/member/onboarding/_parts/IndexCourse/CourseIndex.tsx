@@ -17,7 +17,7 @@ export const CourseIndex: FC = () => {
   const transformed = transformLessonsForCourseIndex(allLessons!);
 
   return (
-    <ScrollArea className="w-full md:w-[420px] bg-gray-100 shadow-lg flex flex-col h-screen">
+    <ScrollArea className="w-full md:w-[420px] bg-gray-100 shadow-lg flex flex-col ">
       {transformed.map((section) => (
         <SectionItem key={section.lessonCode} {...section} />
       ))}
