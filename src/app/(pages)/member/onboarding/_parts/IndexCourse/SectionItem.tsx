@@ -3,7 +3,7 @@ import { FC, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChapterItem } from "./ChapterItem";
 import { CourseChapters } from "@/convex/fromLessons";
-import { getProcessChapterProgress } from "./utils";
+import { calcChapterProgress, getProcessChapterProgress } from "./utils";
 
 export interface SectionItemProps {
   lessonCode: string;
@@ -21,12 +21,10 @@ export const SectionItem: FC<SectionItemProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const processChapterProgress = getProcessChapterProgress(
-    userProgress,
-    allLessons
+  const processChapterProgress = useMemo(
+    () => getProcessChapterProgress(allLessons, userProgress),
+    [allLessons, userProgress]
   );
-
-  const allLessonsForChapter = processChapterProgress["0-0"].allLessons.length;
 
   const progressCountSection = useMemo(() => {
     return userProgress.filter((progress) => allLessons.includes(progress))
@@ -70,11 +68,12 @@ export const SectionItem: FC<SectionItemProps> = ({
         <div className="mt-2 bg-red-100 h-2 rounded-full">
           <div
             className="bg-red-500 h-full rounded-full"
-            style={{ width: `${progressPercentage}%` }}
+            style={{ width: `${progressPercentageSection}%` }}
           ></div>
         </div>
         <span className="text-xs text-gray-500 mt-1 inline-block">
-          {progressPercentage}% ({progressCount}/{allLessons.length})
+          {progressPercentageSection}% ({progressCountSection}/
+          {allLessons.length} lessons completed)
         </span>
       </div>
       <AnimatePresence initial={false}>
@@ -86,17 +85,25 @@ export const SectionItem: FC<SectionItemProps> = ({
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            {chapters.map((chapter) => (
-              <ChapterItem
-                key={chapter.lessonCode}
-                lessonCode={chapter.lessonCode}
-                title={chapter.title}
-                notes={chapter.notes || undefined}
-                userProgress={userProgress}
-                checked={processChapterProgress[chapter.lessonCode].allLessons.length === }
-                onToggle={() => {}}
-              />
-            ))}
+            {chapters.map((chapter) => {
+              const { progressCount, progressPercentage, totalLessons } =
+                calcChapterProgress({
+                  chapterLessonCode: chapter.lessonCode,
+                  processChapterProgress,
+                  userProgress,
+                });
+              return (
+                <ChapterItem
+                  key={chapter.lessonCode}
+                  lessonCode={chapter.lessonCode}
+                  title={chapter.title}
+                  notes={chapter.notes || undefined}
+                  userProgress={userProgress}
+                  checked={progressCount === totalLessons && totalLessons > 0}
+                  onToggle={() => {}}
+                />
+              );
+            })}
           </motion.div>
         )}
       </AnimatePresence>
