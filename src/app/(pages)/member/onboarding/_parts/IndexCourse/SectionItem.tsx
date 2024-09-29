@@ -2,37 +2,16 @@
 import { FC, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChapterItem } from "./ChapterItem";
+import { CourseChapters } from "@/convex/fromLessons";
 
 export interface SectionItemProps {
+  lessonCode: string;
   title: string;
+  chapters: CourseChapters[];
 }
 
-export const SectionItem: FC<SectionItemProps> = ({ title }) => {
+export const SectionItem: FC<SectionItemProps> = ({ title, chapters }) => {
   const [isExpanded, setIsExpanded] = useState(true);
-
-  const chapters = [
-    {
-      id: 1,
-      title: "Growth Principles",
-      notes: "Foundation of growth strategies",
-    },
-    {
-      id: 2,
-      title: "Why Growth Matters",
-      notes: "Understanding the importance of growth",
-    },
-    {
-      id: 3,
-      title: "Guiding Principles of How to Approach Growth",
-      notes: null,
-    },
-    { id: 4, title: "Why Growth Matters. Lay Your foundation", notes: null },
-    {
-      id: 5,
-      title: "Why Growth Matters",
-      notes: "I noted that Growth is exponential is Important",
-    },
-  ];
 
   return (
     <div>
@@ -82,9 +61,9 @@ export const SectionItem: FC<SectionItemProps> = ({ title }) => {
             <div className="">
               {chapters.map((chapter) => (
                 <ChapterItem
-                  key={chapter.id}
+                  key={chapter.lessonCode}
+                  lessonCode={chapter.lessonCode}
                   title={chapter.title}
-                  lessonCode={"0-0"}
                   notes={chapter.notes || undefined}
                   lessons={[
                     {

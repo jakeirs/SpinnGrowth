@@ -42,8 +42,6 @@ export const Editor = ({ isAdmin, lessonFromDb }: EditorProps) => {
     editable: isAdmin,
   });
 
-  console.log("lessonFromDb", lessonFromDb);
-
   useEffect(() => {
     if (editor && lessonFromDb.content) {
       editor.commands.setContent(lessonFromDb.content);
