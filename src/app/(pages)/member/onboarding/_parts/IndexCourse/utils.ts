@@ -56,6 +56,36 @@ export function processSectionProgress(lessons: Lesson[], progress: string[]): {
   }
 }
 
+// New function to process chapter progress
+export function getProcessChapterProgress(lessonCodes: string[], progress: string[]): { [key: string]: { allLessons: string[] } } {
+  // Filter lesson codes to keep only those with at least two "-" characters
+  const filteredLessonCodes = lessonCodes.filter(code => (code.match(/-/g) || []).length >= 2);
+
+  // Group filtered lesson codes by their chapter (second number in the lesson code)
+  const groupedLessons = filteredLessonCodes.reduce((acc, code) => {
+    const [section, chapter] = code.split('-');
+    const key = `${section}-${chapter}`;
+    if (!acc[key]) {
+      acc[key] = { allLessons: [] };
+    }
+    acc[key].allLessons.push(code);
+    return acc;
+  }, {} as { [key: string]: { allLessons: string[] } });
+
+  // Check if progress contains valid strings (e.g., "0-0-1", "1-0-0", etc.)
+  const validProgress = progress.some(code => /^\d+-\d+-\d+$/.test(code));
+
+  if (validProgress) {
+    return groupedLessons;
+  } else {
+    // If no valid progress, return an object with empty arrays for each chapter
+    return Object.keys(groupedLessons).reduce((acc, chapter) => {
+      acc[chapter] = { allLessons: [] };
+      return acc;
+    }, {} as { [key: string]: { allLessons: string[] } });
+  }
+}
+
 // Helper function to count occurrences of a character in a string
 function countOccurrences(str: string, char: string): number {
   return (str.match(new RegExp(char, 'g')) || []).length;

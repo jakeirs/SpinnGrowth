@@ -3,6 +3,7 @@ import { FC, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChapterItem } from "./ChapterItem";
 import { CourseChapters } from "@/convex/fromLessons";
+import { getProcessChapterProgress } from "./utils";
 
 export interface SectionItemProps {
   lessonCode: string;
@@ -20,16 +21,23 @@ export const SectionItem: FC<SectionItemProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const progressCount = useMemo(() => {
+  const processChapterProgress = getProcessChapterProgress(
+    userProgress,
+    allLessons
+  );
+
+  const allLessonsForChapter = processChapterProgress["0-0"].allLessons.length;
+
+  const progressCountSection = useMemo(() => {
     return userProgress.filter((progress) => allLessons.includes(progress))
       .length;
   }, [userProgress, allLessons]);
 
-  const progressPercentage = useMemo(() => {
+  const progressPercentageSection = useMemo(() => {
     return allLessons.length > 0
-      ? Math.round((progressCount / allLessons.length) * 100)
+      ? Math.round((progressCountSection / allLessons.length) * 100)
       : 0;
-  }, [progressCount, allLessons]);
+  }, [progressCountSection, allLessons]);
 
   return (
     <div>
@@ -84,8 +92,8 @@ export const SectionItem: FC<SectionItemProps> = ({
                 lessonCode={chapter.lessonCode}
                 title={chapter.title}
                 notes={chapter.notes || undefined}
-                checked={userProgress.includes(chapter.lessonCode)}
                 userProgress={userProgress}
+                checked={processChapterProgress[chapter.lessonCode].allLessons.length === }
                 onToggle={() => {}}
               />
             ))}
