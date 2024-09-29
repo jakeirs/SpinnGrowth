@@ -1,8 +1,31 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { mutation, query, internalQuery } from "./_generated/server";
 import { vSessionId } from "convex-helpers/server/sessions";
 
 export const getUserProgress = query({
+  args: { sessionId: vSessionId },
+  handler: async (ctx, args) => {
+    const { sessionId } = args;
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_sessionId", (q) => q.eq("sessionId", sessionId))
+      .first();
+
+    if (!user) {
+      return null;
+    }
+
+    const progressDocument = await ctx.db
+      .query("progress")
+      .filter((q) => q.eq(q.field("userId"), user._id))
+      .first();
+
+    return progressDocument ? progressDocument.progress : [];
+  },
+});
+
+export const internal_getUserProgress = internalQuery({
   args: { sessionId: vSessionId },
   handler: async (ctx, args) => {
     const { sessionId } = args;
