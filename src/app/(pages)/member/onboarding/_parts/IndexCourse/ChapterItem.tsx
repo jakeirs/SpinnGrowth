@@ -36,12 +36,16 @@ export const ChapterItem: FC<ChapterItemProps> = ({
       <div
         className={clsx(
           "flex items-center py-4 px-4 cursor-pointer transition-colors duration-300 border-b border-gray-200",
-          isExpanded ? "bg-gray-100 border-b-2  " : "hover:bg-gray-200"
+          isExpanded ? "bg-gray-300 border-b-2  " : "hover:bg-gray-200"
         )}
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <div className="min-w-[40px] flex justify-center">
-          <CircularCheckbox checked={checked} size="medium" />
+          <CircularCheckbox
+            isActive={isExpanded}
+            checked={checked}
+            size="medium"
+          />
         </div>
         {/** TITLE ITEM */}
         <div className="ml-4 flex items-center justify-between w-full ">

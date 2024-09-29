@@ -1,6 +1,8 @@
 import { FC } from "react";
 import { CircularCheckbox } from "./CircularCheckbox";
 import { trimText } from "./Notes";
+import { useParams } from "next/navigation";
+import clsx from "clsx";
 
 export interface LessonProps {
   title: string;
@@ -15,14 +17,24 @@ export const LessonItem: FC<LessonProps> = ({
   checked = false,
   notes = "",
   isLast,
+  lessonCode,
 }) => {
   const trimmedTitle = trimText(title, 55);
   const trimmedNotes = trimText(notes);
+  const params = useParams<{ id: string }>();
+  const isActiveLesson = lessonCode === params.id;
+
+  console.log("lessonCode", lessonCode, params.id, isActiveLesson);
 
   return (
-    <div className="flex items-center py-3 px-4 h-20 cursor-pointer hover:bg-gray-200 transition-colors duration-150">
+    <div
+      className={clsx(
+        "flex items-center py-3 px-4 h-20 cursor-pointer hover:bg-gray-200 transition-colors duration-150",
+        isActiveLesson && " bg-gray-200"
+      )}
+    >
       <div className="min-w-[40px] flex justify-center relative">
-        <CircularCheckbox checked={checked} />
+        <CircularCheckbox checked={checked} isActive={isActiveLesson} />
         {!isLast && (
           <div className="border-r-2 border-gray-400 h-8 w-7 absolute -bottom-11 -left-1/2 translate-x-1/2"></div>
         )}

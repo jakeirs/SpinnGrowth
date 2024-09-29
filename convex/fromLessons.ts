@@ -107,3 +107,56 @@ export const getLessonById = query({
     }
   },
 });
+
+// New mutation to insert an array of lessons
+export const insertLessons = mutation({
+  args: {
+    lessons: v.array(
+      v.object({
+        id: v.number(),
+        title: v.string(),
+        lessonCode: v.string(),
+        notes: v.optional(v.union(v.string(), v.null())),
+      })
+    ),
+  },
+  handler: async (ctx, args) => {
+    const { lessons } = args;
+    const insertedLessons = [];
+
+    for (const lesson of lessons) {
+      const { id, title, lessonCode, notes } = lesson;
+
+      if (typeof title !== "string" || title.trim() === "") {
+        throw new Error(`Invalid title for lesson with id: ${id}`);
+      }
+
+      if (typeof lessonCode !== "string" || lessonCode.trim() === "") {
+        throw new Error(`Invalid lessonCode for lesson with id: ${id}`);
+      }
+
+      try {
+        const existing = await ctx.db
+          .query("lessons")
+          .filter((q) => q.eq(q.field("lessonCode"), lessonCode))
+          .first();
+
+        let lessonId;
+
+        if (existing) {
+          await ctx.db.patch(existing._id, { title, notes: notes || undefined });
+          lessonId = existing._id;
+        } else {
+          lessonId = await ctx.db.insert("lessons", { title, lessonCode, notes: notes || undefined });
+        }
+
+        insertedLessons.push({ id, lessonId });
+      } catch (err) {
+        console.error(`Error inserting/updating lesson with id: ${id}`, err);
+        throw err;
+      }
+    }
+
+    return { success: true, insertedLessons };
+  },
+});
