@@ -7,11 +7,10 @@ interface CircularCheckboxProps {
 }
 
 export const CircularCheckbox: FC<CircularCheckboxProps> = ({
-  checked: x,
+  checked,
   isActive,
   size = "small",
 }) => {
-  const checked = (x = false);
   const getSizeClasses = (size: "small" | "medium" | "large" | number) => {
     if (typeof size === "number") {
       return `w-${size} h-${size}`;

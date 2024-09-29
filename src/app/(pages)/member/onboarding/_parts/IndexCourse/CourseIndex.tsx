@@ -10,22 +10,26 @@ import { useSessionId } from "convex-helpers/react/sessions";
 
 export const CourseIndex: FC = () => {
   const [sessionId] = useSessionId();
-  // const allLessons = useQuery(api.fromLessons.getAllLessons);
+  const allLessons = useQuery(api.fromLessons.getAllLessons, {});
   const userProgress = useQuery(api.fromProgress.getUserProgress, {
     sessionId: sessionId!,
   });
 
-  // if (!allLessons || !userProgress) {
-  //   return null;
-  // }
+  if (!allLessons || !userProgress) {
+    return null;
+  }
 
-  // const transformed = transformLessonsForCourseIndex(allLessons);
+  const transformed = transformLessonsForCourseIndex(allLessons);
 
   return (
     <ScrollArea className="w-full md:w-[420px] bg-gray-100 shadow-lg flex flex-col ">
-      {/* {transformed.map((section) => (
-        <SectionItem key={section.lessonCode} {...section} />
-      ))} */}
+      {transformed.map((section) => (
+        <SectionItem
+          key={section.lessonCode}
+          {...section}
+          userProgress={userProgress}
+        />
+      ))}
     </ScrollArea>
   );
 };

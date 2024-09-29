@@ -21,6 +21,7 @@ export const Editor = ({ isAdmin, lessonFromDb }: EditorProps) => {
   const lessonId = params.id as string;
 
   const editor = useEditor({
+    immediatelyRender: false,
     extensions: [
       StarterKit,
       Image,

@@ -1,8 +1,6 @@
-import { action, internalQuery, mutation, query } from "./_generated/server";
+import {  mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { Doc } from "./_generated/dataModel";
-import { vSessionId } from "convex-helpers/server/sessions";
-import { internal } from "./_generated/api";
 
 // Define types based on the structure in CourseIndex.tsx
 export type CourseChapters = {
@@ -205,8 +203,8 @@ export const insertLessons = mutation({
   },
 });
 
-// New query to get all lessons sorted by lessonCode in descending order
-export const internal_getAllLessons = internalQuery({
+// Query to get all lessons sorted by lessonCode in ascending order
+export const getAllLessons = query({
   handler: async (ctx) => {
     try {
       const lessons = await ctx.db.query("lessons").order("asc").collect();
@@ -218,26 +216,6 @@ export const internal_getAllLessons = internalQuery({
   },
 });
 
-export const getAllLessonsForIndex = action({
-  args: { sessionId: vSessionId },
-  handler: async (ctx, args) => {
-    const sessionId = args.sessionId;
-    try {
-      const lessons = await ctx.runQuery(
-        internal.fromLessons.internal_getAllLessons
-      );
-      const asd = await ctx.runQuery(
-        internal.fromProgress.internal_getUserProgress,
-        { sessionId }
-      );
-
-      return [];
-    } catch (err) {
-      console.error("Error querying all lessons", err);
-      throw err;
-    }
-  },
-});
 
 export const getLessonsForChapter = query({
   args: {

@@ -3,7 +3,7 @@ import { FC, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import clsx from "clsx";
 import { CircularCheckbox } from "./CircularCheckbox";
-import { LessonItem, LessonProps } from "./LessonItem";
+import { LessonItem } from "./LessonItem";
 import { LessonNotes } from "./Notes";
 import Link from "next/link";
 import { ROUTE_NAMES } from "@/app/(pages)/routes";
@@ -16,7 +16,7 @@ interface ChapterItemProps {
   notes?: string;
   checked: boolean;
   onToggle: () => void;
-  // lessons?: LessonProps[];
+  userProgress?: string[];
 }
 
 export const ChapterItem: FC<ChapterItemProps> = ({
@@ -24,7 +24,7 @@ export const ChapterItem: FC<ChapterItemProps> = ({
   notes,
   checked,
   lessonCode,
-  // lessons = [],
+  userProgress,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -95,12 +95,14 @@ export const ChapterItem: FC<ChapterItemProps> = ({
           >
             {lessons.map((lesson, index) => (
               <Link
+                key={lesson.lessonCode}
                 href={`/member/${ROUTE_NAMES.MemberProgram}/${lesson.lessonCode}`}
               >
                 <LessonItem
-                  key={index}
+                  key={lesson.lessonCode}
                   {...lesson}
                   isLast={lessons.length === index + 1}
+                  checked={userProgress?.includes(lesson.lessonCode)}
                 />
               </Link>
             ))}

@@ -8,9 +8,14 @@ export interface SectionItemProps {
   lessonCode: string;
   title: string;
   chapters: CourseChapters[];
+  userProgress: string[];
 }
 
-export const SectionItem: FC<SectionItemProps> = ({ title, chapters }) => {
+export const SectionItem: FC<SectionItemProps> = ({
+  title,
+  chapters,
+  userProgress,
+}) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
@@ -58,18 +63,17 @@ export const SectionItem: FC<SectionItemProps> = ({ title, chapters }) => {
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <div className="">
-              {chapters.map((chapter) => (
-                <ChapterItem
-                  key={chapter.lessonCode}
-                  lessonCode={chapter.lessonCode}
-                  title={chapter.title}
-                  notes={chapter.notes || undefined}
-                  checked={false}
-                  onToggle={() => {}}
-                />
-              ))}
-            </div>
+            {chapters.map((chapter) => (
+              <ChapterItem
+                key={chapter.lessonCode}
+                lessonCode={chapter.lessonCode}
+                title={chapter.title}
+                notes={chapter.notes || undefined}
+                checked={false}
+                userProgress={userProgress}
+                onToggle={() => {}}
+              />
+            ))}
           </motion.div>
         )}
       </AnimatePresence>
