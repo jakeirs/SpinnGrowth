@@ -11,7 +11,7 @@ export interface SectionItemProps {
 }
 
 export const SectionItem: FC<SectionItemProps> = ({ title, chapters }) => {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   return (
     <div>
