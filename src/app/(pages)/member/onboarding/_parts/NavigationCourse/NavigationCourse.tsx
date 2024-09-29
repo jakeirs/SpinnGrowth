@@ -1,15 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Switch } from "@/components/ui/switch";
 import { useSessionId } from "convex-helpers/react/sessions";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { ROUTE_NAMES } from "@/app/(pages)/routes";
 
 export const NavigationCourse: React.FC = () => {
   const [sessionId] = useSessionId();
   const params = useParams<{ id: string }>();
+  const router = useRouter();
   const lessonCode = params.id;
   const setProgressOfProgram = useMutation(
     api.fromProgress.setProgressOfProgram
@@ -31,9 +33,8 @@ export const NavigationCourse: React.FC = () => {
         });
 
         if (result.success) {
-          console.log(
-            `Lesson ${lessonCode} marked as ${result.complete ? "complete" : "incomplete"}`
-          );
+          result.complete &&
+            router.push(`/member/${ROUTE_NAMES.MemberProgram}/0-0-1`);
         } else {
           console.error("Failed to update lesson progress:", result.message);
         }
@@ -46,13 +47,15 @@ export const NavigationCourse: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-between p-4 border-b">
-      <span>Lesson: {lessonCode}</span>
-      <Switch
-        checked={lessonComplete}
-        onCheckedChange={handleToggle}
-        aria-label={`Mark lesson ${lessonCode} as ${lessonComplete ? "incomplete" : "complete"}`}
-      />
+    <div className="flex items-center justify-center p-4 border-t w-full">
+      <div className="flex gap-4">
+        <span>Lesson {lessonComplete ? "complete" : "incomplete"}</span>
+        <Switch
+          checked={lessonComplete}
+          onCheckedChange={handleToggle}
+          aria-label={`Mark lesson ${lessonCode} as ${lessonComplete ? "incomplete" : "complete"}`}
+        />
+      </div>
     </div>
   );
 };
