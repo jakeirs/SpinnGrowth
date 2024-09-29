@@ -6,9 +6,14 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { transformLessonsForCourseIndex } from "@/convex/fromLessons";
+import { useSessionId } from "convex-helpers/react/sessions";
 
 export const CourseIndex: FC = () => {
+  const [sessionId] = useSessionId();
   const allLessons = useQuery(api.fromLessons.getAllLessons);
+  const userProgress = useQuery(api.fromProgress.getUserProgress, {
+    sessionId: sessionId!,
+  });
 
   if (!allLessons) {
     return null;
