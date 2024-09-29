@@ -7,7 +7,7 @@ type Lesson = {
   // notes?: string;
 };
 
-export function processLessons(lessons: Lesson[], progress: string[]): string[] {
+export function processLessons(lessons: Lesson[]): string[] {
   // Extract all lessonCodes
   const allLessonCodes = lessons.map(lesson => lesson.lessonCode);
   
@@ -21,7 +21,34 @@ export function processLessons(lessons: Lesson[], progress: string[]): string[] 
   return filteredLessonCodes;
 }
 
+// Updated function to process progress and return lessons with at least two "-" characters
+export function processProgress(lessons: Lesson[], progress: string[]): { [key: string]: { allLessons: string[] } } {
+  // Filter lessons to keep only those with at least two "-" characters
+  const filteredLessons = lessons.filter(lesson => (lesson.lessonCode.match(/-/g) || []).length >= 2);
 
+  // Group filtered lessons by their section (first number in the lesson code)
+  const groupedLessons = filteredLessons.reduce((acc, lesson) => {
+    const section = lesson.lessonCode.split('-')[0];
+    if (!acc[section]) {
+      acc[section] = { allLessons: [] };
+    }
+    acc[section].allLessons.push(lesson.lessonCode);
+    return acc;
+  }, {} as { [key: string]: { allLessons: string[] } });
+
+  // Check if progress contains valid strings (e.g., "0-0-1", "1-0-0", etc.)
+  const validProgress = progress.some(code => /^\d+-\d+-\d+$/.test(code));
+
+  if (validProgress) {
+    return groupedLessons;
+  } else {
+    // If no valid progress, return an object with empty arrays for each section
+    return Object.keys(groupedLessons).reduce((acc, section) => {
+      acc[section] = { allLessons: [] };
+      return acc;
+    }, {} as { [key: string]: { allLessons: string[] } });
+  }
+}
 
 // Helper function to count occurrences of a character in a string
 function countOccurrences(str: string, char: string): number {
