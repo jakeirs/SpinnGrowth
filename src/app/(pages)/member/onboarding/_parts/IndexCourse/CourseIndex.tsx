@@ -7,7 +7,7 @@ import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { transformLessonsForCourseIndex } from "@/convex/fromLessons";
 import { useSessionId } from "convex-helpers/react/sessions";
-import { processProgress } from "./utils";
+import { processSectionProgress } from "./utils";
 
 export const CourseIndex: FC = () => {
   const [sessionId] = useSessionId();
@@ -20,9 +20,7 @@ export const CourseIndex: FC = () => {
     return null;
   }
 
-  const processedProgress = processProgress(allLessons, userProgress);
-
-  console.log("processedProgress", processedProgress);
+  const processedProgress = processSectionProgress(allLessons, userProgress);
   const transformed = transformLessonsForCourseIndex(allLessons);
 
   return (
@@ -32,6 +30,7 @@ export const CourseIndex: FC = () => {
           key={section.lessonCode}
           {...section}
           userProgress={userProgress}
+          allLessons={processedProgress[section.lessonCode].allLessons}
         />
       ))}
     </ScrollArea>

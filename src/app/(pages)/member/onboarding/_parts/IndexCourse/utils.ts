@@ -22,7 +22,13 @@ export function processLessons(lessons: Lesson[]): string[] {
 }
 
 // Updated function to process progress and return lessons with at least two "-" characters
-export function processProgress(lessons: Lesson[], progress: string[]): { [key: string]: { allLessons: string[] } } {
+// Output:
+// {
+//   "0": { allLessons: ['0-0-1', '0-1-2'] },
+//   "1": { allLessons: ['1-0-1', '1-1-0'] },
+//   "2": { allLessons: ['2-0-1'] }
+// }
+export function processSectionProgress(lessons: Lesson[], progress: string[]): { [key: string]: { allLessons: string[] } } {
   // Filter lessons to keep only those with at least two "-" characters
   const filteredLessons = lessons.filter(lesson => (lesson.lessonCode.match(/-/g) || []).length >= 2);
 

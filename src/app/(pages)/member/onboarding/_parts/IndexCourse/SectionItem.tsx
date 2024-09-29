@@ -1,5 +1,5 @@
 "use client";
-import { FC, useState } from "react";
+import { FC, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChapterItem } from "./ChapterItem";
 import { CourseChapters } from "@/convex/fromLessons";
@@ -9,14 +9,27 @@ export interface SectionItemProps {
   title: string;
   chapters: CourseChapters[];
   userProgress: string[];
+  allLessons: string[];
 }
 
 export const SectionItem: FC<SectionItemProps> = ({
   title,
   chapters,
   userProgress,
+  allLessons,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+
+  const progressCount = useMemo(() => {
+    return userProgress.filter((progress) => allLessons.includes(progress))
+      .length;
+  }, [userProgress, allLessons]);
+
+  const progressPercentage = useMemo(() => {
+    return allLessons.length > 0
+      ? Math.round((progressCount / allLessons.length) * 100)
+      : 0;
+  }, [progressCount, allLessons]);
 
   return (
     <div>
@@ -49,10 +62,12 @@ export const SectionItem: FC<SectionItemProps> = ({
         <div className="mt-2 bg-red-100 h-2 rounded-full">
           <div
             className="bg-red-500 h-full rounded-full"
-            style={{ width: "16%" }}
+            style={{ width: `${progressPercentage}%` }}
           ></div>
         </div>
-        <span className="text-xs text-gray-500 mt-1 inline-block">16%</span>
+        <span className="text-xs text-gray-500 mt-1 inline-block">
+          {progressPercentage}% ({progressCount}/{allLessons.length})
+        </span>
       </div>
       <AnimatePresence initial={false}>
         {isExpanded && (
@@ -69,7 +84,7 @@ export const SectionItem: FC<SectionItemProps> = ({
                 lessonCode={chapter.lessonCode}
                 title={chapter.title}
                 notes={chapter.notes || undefined}
-                checked={false}
+                checked={userProgress.includes(chapter.lessonCode)}
                 userProgress={userProgress}
                 onToggle={() => {}}
               />
