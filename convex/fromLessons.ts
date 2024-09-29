@@ -233,7 +233,7 @@ export const getLessonsForChapter = query({
         )
         .order("asc")
         .collect();
-      return lessons;
+      return lessons.sort((a, b) => a.lessonCode.localeCompare(b.lessonCode));
     } catch (err) {
       console.error("Error querying filtered lessons", err);
       throw err;
