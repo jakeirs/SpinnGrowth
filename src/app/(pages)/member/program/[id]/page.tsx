@@ -87,15 +87,6 @@ export default function CoursePage() {
         {lessonFromDb && (
           <Editor isAdmin={isAdminSwitch} lessonFromDb={lessonFromDb} />
         )}
-        {selectedLesson && (
-          <div className="mt-4 flex items-center justify-end">
-            <span className="mr-2">Mark lesson as complete</span>
-            <Switch
-              checked={isLessonComplete}
-              onCheckedChange={handleLessonCompletion}
-            />
-          </div>
-        )}
       </main>
     </div>
   );
