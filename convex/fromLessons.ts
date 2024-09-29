@@ -16,6 +16,28 @@ export type CourseSection = {
   chapters: CourseChapters[];
 };
 
+export const deleteLessonByLessonCode = mutation({
+  args: {
+    lessonCode: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const { lessonCode } = args;
+
+    const lesson = await ctx.db
+      .query("lessons")
+      .filter((q) => q.eq(q.field("lessonCode"), lessonCode))
+      .unique();
+
+    // If the lesson is found, delete it
+    if (lesson) {
+      await ctx.db.delete(lesson._id);
+      return { success: true, message: "Lesson deleted successfully" };
+    } else {
+      return { success: false, message: "Lesson not found" };
+    }
+  },
+});
+
 export const uploadCourseData = mutation({
   args: {
     lessonCode: v.string(),

@@ -40,9 +40,12 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
   }
 
   const saveLessonToDb = useMutation(api.fromLessons.uploadCourseData);
+  const deleteLessonByLessonCode = useMutation(
+    api.fromLessons.deleteLessonByLessonCode
+  );
 
   const [inputTitle, setInputTitle] = useState(title);
-  const [inputLessonId, setInputLessonCode] = useState(lessonCode);
+  const [inputLessonCode, setInputLessonCode] = useState(lessonCode);
 
   const addImage = () => {
     const url = window.prompt("Enter the URL of the image:");
@@ -52,8 +55,7 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
   };
 
   const onClickSaveLessonContent = async () => {
-    if (!inputLessonId || !editor) {
-      console.log("lessonCode", inputLessonId, editor);
+    if (!inputLessonCode || !editor) {
       throw new Error(
         "No Selected Lesson Id Provided or Editor not initialized"
       );
@@ -62,10 +64,28 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
     const json = editor.getJSON();
 
     try {
+      console.log("inputLessonCode", inputLessonCode);
       const result = await saveLessonToDb({
-        lessonCode: inputLessonId,
+        lessonCode: inputLessonCode,
         content: json,
         title: inputTitle, // Now using the title state
+      });
+      console.log(result);
+    } catch (error) {
+      console.error("Error saving content:", error);
+    }
+  };
+
+  const onClickDelete = async () => {
+    if (!inputLessonCode || !editor) {
+      throw new Error(
+        "No Selected Lesson Id Provided or Editor not initialized"
+      );
+    }
+
+    try {
+      const result = await deleteLessonByLessonCode({
+        lessonCode: inputLessonCode,
       });
       console.log(result);
     } catch (error) {
@@ -94,7 +114,7 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
         <Input
           type="text"
           placeholder="Lesson Code"
-          value={inputLessonId}
+          value={inputLessonCode}
           onChange={(e) => handleLessonCodeChange(e.target.value)}
           className="w-full"
         />
@@ -103,6 +123,9 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
       <div className="bg-gray-100 p-2 flex flex-wrap gap-2 mb-4 rounded-lg">
         <Button variant="outline" onClick={onClickSaveLessonContent}>
           Save to Convex
+        </Button>
+        <Button variant="destructive" onClick={onClickDelete}>
+          Delete
         </Button>
         <Button
           variant="ghost"

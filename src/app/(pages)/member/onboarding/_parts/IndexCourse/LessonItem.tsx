@@ -24,8 +24,6 @@ export const LessonItem: FC<LessonProps> = ({
   const params = useParams<{ id: string }>();
   const isActiveLesson = lessonCode === params.id;
 
-  console.log("lessonCode", lessonCode, params.id, isActiveLesson);
-
   return (
     <div
       className={clsx(

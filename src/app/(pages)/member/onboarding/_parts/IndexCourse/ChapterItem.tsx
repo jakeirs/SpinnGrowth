@@ -32,8 +32,6 @@ export const ChapterItem: FC<ChapterItemProps> = ({
     chapterCode: lessonCode,
   });
 
-  console.log("lessons", lessons);
-
   return (
     <div
       className={clsx(
