@@ -16,9 +16,9 @@ export const EditorContentWrapper = ({ isAdmin }: EditorWrapperProps) => {
   const params = useParams();
   const contentCode = params.staticContentCode as string;
 
-  const saveContent = useMutation(api.fromLessons.uploadCourseData);
+  const saveContent = useMutation(api.fromStaticContent.saveStaticContent);
   const deleteLessonByLessonCode = useMutation(
-    api.fromLessons.deleteLessonByLessonCode
+    api.fromStaticContent.deleteContentByCode
   );
 
   const [isAdminSwitch, setIsAdminSwitch] = useState(isAdmin);

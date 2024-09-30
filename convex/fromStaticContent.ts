@@ -1,7 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
-export const deleteLessonByLessonCode = mutation({
+export const deleteContentByCode = mutation({
   args: {
     contentCode: v.string(),
   },
