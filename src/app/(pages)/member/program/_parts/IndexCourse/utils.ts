@@ -158,7 +158,7 @@ export const resumeLessonOn = (progress: string[], params: { id: string }) => {
 };
 
 export const calcNextLesson = (currentLesson: string) => {
-  if (!currentLesson || !currentLesson.split("-")[2]) return "0-0-0";
+  if (!currentLesson || !currentLesson.split("-")[2]) return "";
 
   // Split the string into parts
   const parts = currentLesson.split("-");

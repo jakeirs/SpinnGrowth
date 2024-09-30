@@ -9,18 +9,30 @@ import TextAlign from "@tiptap/extension-text-align";
 import Underline from "@tiptap/extension-underline";
 import Link from "@tiptap/extension-link";
 import { EditorTools } from "./EditorTools";
-import { useParams } from "next/navigation";
 import { useEffect } from "react";
+
+export interface ContentData {
+  content: string;
+  title?: string;
+  nextLesson?: string;
+  notes?: string;
+}
 
 interface EditorProps {
   isAdmin: boolean;
-  lessonFromDb: Doc<"lessons">;
+  contentFromDb: ContentData;
+  pageId: string;
+  saveContent: (args: any) => Promise<any>;
+  deleteLessonByLessonCode: (args: any) => Promise<any>;
 }
 
-export const Editor = ({ isAdmin, lessonFromDb }: EditorProps) => {
-  const params = useParams();
-  const lessonId = params.id as string;
-
+export const Editor = ({ 
+  isAdmin, 
+  contentFromDb, 
+  pageId, 
+  saveContent, 
+  deleteLessonByLessonCode 
+}: EditorProps) => {
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
@@ -36,8 +48,8 @@ export const Editor = ({ isAdmin, lessonFromDb }: EditorProps) => {
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
-          rel: 'noopener noreferrer',
-          target: '_blank',
+          rel: "noopener noreferrer",
+          target: "_blank",
         },
       }),
     ],
@@ -52,20 +64,20 @@ export const Editor = ({ isAdmin, lessonFromDb }: EditorProps) => {
   });
 
   useEffect(() => {
-    if (editor && lessonFromDb.content) {
-      editor.commands.setContent(lessonFromDb.content);
+    if (editor && contentFromDb.content) {
+      editor.commands.setContent(contentFromDb.content);
     }
-  }, [editor, lessonFromDb?.content]);
+  }, [editor, contentFromDb.content]);
 
   return (
     <div>
-      {isAdmin && lessonFromDb && (
+      {isAdmin && contentFromDb && (
         <EditorTools
           editor={editor}
-          title={lessonFromDb.title}
-          lessonCode={lessonId}
-          nextLessonCode={lessonFromDb.nextLesson}
-          notes={lessonFromDb.notes}
+          contentFromDb={contentFromDb}
+          contentCode={pageId}
+          saveContent={saveContent}
+          deleteLessonByLessonCode={deleteLessonByLessonCode}
         />
       )}
       <EditorContent editor={editor} className="tiptap-editor" />

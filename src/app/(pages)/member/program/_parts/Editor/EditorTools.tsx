@@ -22,40 +22,36 @@ import {
   Redo,
   Link as LinkIcon,
 } from "lucide-react";
-import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
 import { calcNextLesson } from "../IndexCourse/utils";
+import { ContentData } from "./Editor";
 
 interface EditorToolsProps {
   editor: Editor | null;
-  title: string;
-  lessonCode: string;
-  notes?: string;
-  nextLessonCode?: string;
+  contentFromDb: ContentData;
+  contentCode: string;
+  saveContent: (args: any) => Promise<any>;
+  deleteLessonByLessonCode: (args: any) => Promise<any>;
 }
 
 export const EditorTools: React.FC<EditorToolsProps> = ({
   editor,
-  title = "",
-  lessonCode,
-  nextLessonCode,
-  notes,
+  contentCode,
+  contentFromDb,
+  saveContent,
+  deleteLessonByLessonCode,
 }) => {
   if (!editor) {
     return null;
   }
 
-  const uploadCourseData = useMutation(api.fromLessons.uploadCourseData);
-  const deleteLessonByLessonCode = useMutation(
-    api.fromLessons.deleteLessonByLessonCode
-  );
+  const { title, notes, nextLesson: nextLessonCode } = contentFromDb;
 
   const [inputTitle, setInputTitle] = useState(title);
-  const [inputLessonCode, setInputLessonCode] = useState(lessonCode);
+  const [inputContentCode, setInputContentCode] = useState(contentCode);
   const [inputNotes, setNotes] = useState(notes);
   const [linkUrl, setLinkUrl] = useState("");
 
-  const nextLesson = nextLessonCode || calcNextLesson(lessonCode);
+  const nextLesson = nextLessonCode || calcNextLesson(contentCode);
   const [inputNextLesson, setInputNextLesson] = useState(nextLesson);
 
   const addImage = () => {
@@ -71,7 +67,6 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
       return;
     }
 
-    // If there's no selection, create a new link with the URL as text
     if (editor.state.selection.empty) {
       editor
         .chain()
@@ -79,7 +74,6 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
         .insertContent(`<a href="${linkUrl}">${linkUrl}</a>`)
         .run();
     } else {
-      // If there's a selection, update it to be a link
       editor
         .chain()
         .focus()
@@ -92,7 +86,7 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
   }, [editor, linkUrl]);
 
   const onClickSaveLessonContent = async () => {
-    if (!inputLessonCode || !editor) {
+    if (!inputContentCode || !editor) {
       throw new Error(
         "No Selected Lesson Id Provided or Editor not initialized"
       );
@@ -101,9 +95,8 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
     const json = editor.getJSON();
 
     try {
-      console.log("inputLessonCode", inputLessonCode);
-      const result = await uploadCourseData({
-        lessonCode: inputLessonCode,
+      const result = await saveContent({
+        lessonCode: inputContentCode,
         notes: inputNotes,
         title: inputTitle,
         content: json,
@@ -116,7 +109,7 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
   };
 
   const onClickDelete = async () => {
-    if (!inputLessonCode || !editor) {
+    if (!inputContentCode || !editor) {
       throw new Error(
         "No Selected Lesson Id Provided or Editor not initialized"
       );
@@ -124,7 +117,7 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
 
     try {
       const result = await deleteLessonByLessonCode({
-        lessonCode: inputLessonCode,
+        lessonCode: inputContentCode,
       });
       console.log(result);
     } catch (error) {
@@ -140,7 +133,7 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
   };
 
   const handleLessonCodeChange = (value: string) => {
-    setInputLessonCode(value);
+    setInputContentCode(value);
   };
   const handleNextLessonChange = (value: string) => {
     setInputNextLesson(value);
@@ -166,7 +159,7 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
         <Input
           type="text"
           placeholder="Lesson Code"
-          value={inputLessonCode}
+          value={inputContentCode}
           onChange={(e) => handleLessonCodeChange(e.target.value)}
           className="w-full"
         />
