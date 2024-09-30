@@ -1,31 +1,8 @@
 import { v } from "convex/values";
-import { mutation, query, internalQuery } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import { vSessionId } from "convex-helpers/server/sessions";
 
 export const getUserProgress = query({
-  args: { sessionId: vSessionId },
-  handler: async (ctx, args) => {
-    const { sessionId } = args;
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_sessionId", (q) => q.eq("sessionId", sessionId))
-      .first();
-
-    if (!user) {
-      return null;
-    }
-
-    const progressDocument = await ctx.db
-      .query("progress")
-      .filter((q) => q.eq(q.field("userId"), user._id))
-      .first();
-
-    return progressDocument ? progressDocument.progress : [];
-  },
-});
-
-export const internal_getUserProgress = internalQuery({
   args: { sessionId: vSessionId },
   handler: async (ctx, args) => {
     const { sessionId } = args;
@@ -86,6 +63,7 @@ export const setProgressOfProgram = mutation({
       const progressId = await ctx.db.insert("progress", {
         userId: existingUser._id,
         progress: [lessonCode],
+        lastLesson: lessonCode,
       });
 
       return {
@@ -105,11 +83,15 @@ export const setProgressOfProgram = mutation({
         (lesson) => lesson !== lessonCode
       );
 
-      await ctx.db.patch(progressDocument._id, { progress: newProgress });
+      await ctx.db.patch(progressDocument._id, {
+        progress: newProgress,
+        lastLesson: lessonCode,
+      });
     } else {
       // mark as complete
       await ctx.db.patch(progressDocument._id, {
         progress: [lessonCode, ...progressDocument.progress],
+        lastLesson: lessonCode,
       });
     }
 
