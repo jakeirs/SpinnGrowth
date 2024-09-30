@@ -108,7 +108,7 @@ export const SectionItem: FC<SectionItemProps> = ({
                   key={chapter.lessonCode}
                   lessonCode={chapter.lessonCode}
                   title={chapter.title}
-                  notes={chapter.notes || undefined}
+                  notes={`${progressCount}/${totalLessons} Lessons`}
                   userProgress={userProgress}
                   checked={progressCount === totalLessons && totalLessons > 0}
                   onToggle={() => {}}

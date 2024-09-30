@@ -1,4 +1,5 @@
-import {  mutation, query } from "./_generated/server";
+import { insertLessons } from "./fromLessons";
+import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { Doc } from "./_generated/dataModel";
 
@@ -41,10 +42,11 @@ export const uploadCourseData = mutation({
   args: {
     lessonCode: v.string(),
     title: v.string(),
+    notes: v.string(),
     content: v.any(),
   },
   handler: async (ctx, args) => {
-    const { title, lessonCode, content } = args;
+    const { title, lessonCode, notes, content } = args;
 
     if (typeof lessonCode !== "string" || lessonCode.trim() === "") {
       throw new Error("Invalid lessonId");
@@ -65,12 +67,13 @@ export const uploadCourseData = mutation({
 
     if (existing) {
       try {
+        // patch
         await ctx.db.patch(existing._id, {
           lessonCode,
           content,
           title,
+          notes,
         });
-
         return { success: true };
       } catch (err) {
         console.error("Error patching data", err);
@@ -79,6 +82,7 @@ export const uploadCourseData = mutation({
     }
 
     try {
+      // insertLessons
       const lessonRecordId = await ctx.db.insert("lessons", {
         lessonCode,
         content,
@@ -141,67 +145,7 @@ export const getLessonById = query({
       throw err;
     }
   },
-});
-
-// New mutation to insert an array of lessons
-export const insertLessons = mutation({
-  args: {
-    lessons: v.array(
-      v.object({
-        id: v.number(),
-        title: v.string(),
-        lessonCode: v.string(),
-        notes: v.optional(v.union(v.string(), v.null())),
-      })
-    ),
-  },
-  handler: async (ctx, args) => {
-    const { lessons } = args;
-    const insertedLessons = [];
-
-    for (const lesson of lessons) {
-      const { id, title, lessonCode, notes } = lesson;
-
-      if (typeof title !== "string" || title.trim() === "") {
-        throw new Error(`Invalid title for lesson with id: ${id}`);
-      }
-
-      if (typeof lessonCode !== "string" || lessonCode.trim() === "") {
-        throw new Error(`Invalid lessonCode for lesson with id: ${id}`);
-      }
-
-      try {
-        const existing = await ctx.db
-          .query("lessons")
-          .filter((q) => q.eq(q.field("lessonCode"), lessonCode))
-          .first();
-
-        let lessonId;
-
-        if (existing) {
-          await ctx.db.patch(existing._id, {
-            title,
-            notes: notes || undefined,
-          });
-          lessonId = existing._id;
-        } else {
-          lessonId = await ctx.db.insert("lessons", {
-            title,
-            lessonCode,
-            notes: notes || undefined,
-          });
-        }
-
-        insertedLessons.push({ id, lessonId });
-      } catch (err) {
-        console.error(`Error inserting/updating lesson with id: ${id}`, err);
-        throw err;
-      }
-    }
-
-    return { success: true, insertedLessons };
-  },
-});
+})
 
 // Query to get all lessons sorted by lessonCode in ascending order
 export const getAllLessons = query({
@@ -215,7 +159,6 @@ export const getAllLessons = query({
     }
   },
 });
-
 
 export const getLessonsForChapter = query({
   args: {

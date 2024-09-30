@@ -56,6 +56,7 @@ export const Editor = ({ isAdmin, lessonFromDb }: EditorProps) => {
           editor={editor}
           title={lessonFromDb.title}
           lessonCode={lessonId}
+          notes={lessonFromDb.notes}
         />
       )}
       <EditorContent editor={editor} className="tiptap-editor" />

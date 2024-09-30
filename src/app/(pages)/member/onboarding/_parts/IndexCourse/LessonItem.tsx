@@ -38,7 +38,14 @@ export const LessonItem: FC<LessonProps> = ({
         )}
       </div>
       <div className="ml-4 p-1">
-        <h3 className="ml-3 text-lg text-left leading-none">{trimmedTitle}</h3>
+        <h3
+          className={clsx(
+            "ml-3 text-lg text-left leading-none",
+            isActiveLesson && "font-semibold text-gray-800"
+          )}
+        >
+          {trimmedTitle}
+        </h3>
 
         {notes && (
           <div className="flex items-center px-3 text-xs text-gray-700 mt-1">

@@ -28,12 +28,14 @@ interface EditorToolsProps {
   editor: Editor | null;
   title: string;
   lessonCode: string;
+  notes?: string;
 }
 
 export const EditorTools: React.FC<EditorToolsProps> = ({
   editor,
   title = "",
   lessonCode,
+  notes,
 }) => {
   if (!editor) {
     return null;
@@ -46,6 +48,7 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
 
   const [inputTitle, setInputTitle] = useState(title);
   const [inputLessonCode, setInputLessonCode] = useState(lessonCode);
+  const [inputNotes, setNotes] = useState(notes);
 
   const addImage = () => {
     const url = window.prompt("Enter the URL of the image:");
@@ -67,8 +70,9 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
       console.log("inputLessonCode", inputLessonCode);
       const result = await uploadCourseData({
         lessonCode: inputLessonCode,
+        notes: inputNotes,
+        title: inputTitle,
         content: json,
-        title: inputTitle, // Now using the title state
       });
       console.log(result);
     } catch (error) {
@@ -96,6 +100,9 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
   const handleTitleChange = (value: string) => {
     setInputTitle(value);
   };
+  const handleNotesChange = (value: string) => {
+    setNotes(value);
+  };
 
   const handleLessonCodeChange = (value: string) => {
     setInputLessonCode(value);
@@ -109,6 +116,13 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
           placeholder="Title"
           value={inputTitle}
           onChange={(e) => handleTitleChange(e.target.value)}
+          className="w-full"
+        />
+        <Input
+          type="text"
+          placeholder="Notes"
+          value={inputNotes}
+          onChange={(e) => handleNotesChange(e.target.value)}
           className="w-full"
         />
         <Input
