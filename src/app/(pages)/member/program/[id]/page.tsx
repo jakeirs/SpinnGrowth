@@ -39,7 +39,7 @@ export default function CoursePage() {
             isAdminSwitch ? "max-w-[900px]" : "max-w-[665px]"
           )}
         >
-          <h1 className="text-5xl text-center font-bold mb-16">
+          <h1 className="text-6xl text-center font-bold mb-16">
             {lessonFromDb?.title}
           </h1>
           {lessonFromDb && (
