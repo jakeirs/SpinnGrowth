@@ -12,7 +12,7 @@ export const NavigationCourse: React.FC = () => {
   const [sessionId] = useSessionId();
   const params = useParams<{ id: string }>();
   const router = useRouter();
-  const lessonCode = params.id;
+  const lessonCode = params.id ? params.id : "0-0-0";
   const setProgressOfProgram = useMutation(
     api.fromProgress.setProgressOfProgram
   );
@@ -26,7 +26,7 @@ export const NavigationCourse: React.FC = () => {
   }
 
   const lesson = useQuery(api.fromLessons.getLessonById, {
-    lessonCode: params.id!,
+    lessonCode,
   });
 
   const nextLessonCode = lesson?.nextLesson;
