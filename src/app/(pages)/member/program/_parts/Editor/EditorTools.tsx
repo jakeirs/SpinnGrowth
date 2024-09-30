@@ -20,6 +20,7 @@ import {
   Image as ImageIcon,
   Undo,
   Redo,
+  Link as LinkIcon,
 } from "lucide-react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -52,6 +53,7 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
   const [inputTitle, setInputTitle] = useState(title);
   const [inputLessonCode, setInputLessonCode] = useState(lessonCode);
   const [inputNotes, setNotes] = useState(notes);
+  const [linkUrl, setLinkUrl] = useState("");
 
   const nextLesson = nextLessonCode || calcNextLesson(lessonCode);
   const [inputNextLesson, setInputNextLesson] = useState(nextLesson);
@@ -64,24 +66,30 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
   };
 
   const setLink = useCallback(() => {
-    const previousUrl = editor.getAttributes("link").href;
-    const url = window.prompt("URL", previousUrl);
-
-    // cancelled
-    if (url === null) {
+    if (linkUrl === "") {
+      editor.chain().focus().extendMarkRange("link").unsetMark("link").run();
       return;
     }
 
-    // empty
-    if (url === "") {
-      editor.chain().focus().extendMarkRange("link").unsetLink().run();
-
-      return;
+    // If there's no selection, create a new link with the URL as text
+    if (editor.state.selection.empty) {
+      editor
+        .chain()
+        .focus()
+        .insertContent(`<a href="${linkUrl}">${linkUrl}</a>`)
+        .run();
+    } else {
+      // If there's a selection, update it to be a link
+      editor
+        .chain()
+        .focus()
+        .extendMarkRange("link")
+        .setMark("link", { href: linkUrl })
+        .run();
     }
 
-    // update link
-    editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
-  }, [editor]);
+    setLinkUrl("");
+  }, [editor, linkUrl]);
 
   const onClickSaveLessonContent = async () => {
     if (!inputLessonCode || !editor) {
@@ -313,20 +321,26 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
         <Button variant="ghost" size="icon" onClick={addImage}>
           <ImageIcon className="h-4 w-4" />
         </Button>
+        <div className="flex items-center space-x-2">
+          <Input
+            type="text"
+            placeholder="Enter URL"
+            value={linkUrl}
+            onChange={(e) => setLinkUrl(e.target.value)}
+            className="w-40"
+          />
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={setLink}
+            className={editor.isActive("link") ? "bg-gray-200" : ""}
+          >
+            <LinkIcon className="h-4 w-4" />
+          </Button>
+        </div>
         <Button
           variant="ghost"
-
-          onClick={setLink}
-          className={
-            editor.isActive({ textAlign: "justify" }) ? "bg-gray-200" : ""
-          }
-        >
-          Set link
-        </Button>
-        <Button
-          variant="ghost"
-
-          onClick={() => editor.chain().focus().unsetLink().run()}
+          onClick={() => editor.chain().focus().unsetMark("link").run()}
           disabled={!editor.isActive("link")}
         >
           Unset link

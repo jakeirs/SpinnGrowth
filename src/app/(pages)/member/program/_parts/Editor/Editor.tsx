@@ -34,7 +34,11 @@ export const Editor = ({ isAdmin, lessonFromDb }: EditorProps) => {
       }),
       Underline,
       Link.configure({
-        openOnClick: true,
+        openOnClick: false,
+        HTMLAttributes: {
+          rel: 'noopener noreferrer',
+          target: '_blank',
+        },
       }),
     ],
     editorProps: {
