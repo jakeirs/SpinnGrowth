@@ -9,6 +9,7 @@ import Link from "next/link";
 import { ROUTE_NAMES } from "@/app/(pages)/routes";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { resumeLessonOn } from "./utils";
 
 interface ChapterItemProps {
   title: string;
@@ -16,7 +17,7 @@ interface ChapterItemProps {
   notes?: string;
   checked: boolean;
   onToggle: () => void;
-  userProgress?: string[];
+  userProgress: string[];
 }
 
 export const ChapterItem: FC<ChapterItemProps> = ({
@@ -26,7 +27,8 @@ export const ChapterItem: FC<ChapterItemProps> = ({
   lessonCode,
   userProgress,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const { activeChapter } = resumeLessonOn(userProgress);
+  const [isExpanded, setIsExpanded] = useState(activeChapter === lessonCode);
 
   const lessons = useQuery(api.fromLessons.getLessonsForChapter, {
     chapterCode: lessonCode,

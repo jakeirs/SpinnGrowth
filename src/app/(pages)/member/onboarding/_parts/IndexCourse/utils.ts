@@ -139,3 +139,20 @@ export const calcChapterProgress = ({
     totalLessons: chapterLessons.length,
   };
 };
+
+export const resumeLessonOn = (progress: string[]) => {
+  if (!progress || !progress.at(-1)) {
+    return {
+      activeSection: "0",
+      activeChapter: "0-0",
+    };
+  }
+  const lastLesson = progress.at(-1);
+  const activeSection = lastLesson?.split("-")[0];
+  const activeChapter = `${activeSection}-${lastLesson?.split("-")[1]}`;
+
+  return {
+    activeSection,
+    activeChapter,
+  };
+};

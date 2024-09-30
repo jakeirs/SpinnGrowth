@@ -63,7 +63,6 @@ export const setProgressOfProgram = mutation({
       const progressId = await ctx.db.insert("progress", {
         userId: existingUser._id,
         progress: [lessonCode],
-        lastLesson: lessonCode,
       });
 
       return {
@@ -85,13 +84,11 @@ export const setProgressOfProgram = mutation({
 
       await ctx.db.patch(progressDocument._id, {
         progress: newProgress,
-        lastLesson: lessonCode,
       });
     } else {
       // mark as complete
       await ctx.db.patch(progressDocument._id, {
-        progress: [lessonCode, ...progressDocument.progress],
-        lastLesson: lessonCode,
+        progress: [...progressDocument.progress, lessonCode],
       });
     }
 

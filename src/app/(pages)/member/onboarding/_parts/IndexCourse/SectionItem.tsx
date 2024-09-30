@@ -3,7 +3,11 @@ import { FC, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChapterItem } from "./ChapterItem";
 import { CourseChapters } from "@/convex/fromLessons";
-import { calcChapterProgress, getProcessChapterProgress } from "./utils";
+import {
+  calcChapterProgress,
+  getProcessChapterProgress,
+  resumeLessonOn,
+} from "./utils";
 
 export interface SectionItemProps {
   lessonCode: string;
@@ -18,8 +22,10 @@ export const SectionItem: FC<SectionItemProps> = ({
   chapters,
   userProgress,
   allLessons,
+  lessonCode,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const { activeSection } = resumeLessonOn(userProgress);
+  const [isExpanded, setIsExpanded] = useState(activeSection === lessonCode);
 
   const processChapterProgress = useMemo(
     () => getProcessChapterProgress(allLessons, userProgress),
