@@ -77,6 +77,10 @@
     font-weight: bold;
   }
 
+  a {
+    @apply text-blue-600;
+  }
+
   strong {
     font-weight: bold;
   }

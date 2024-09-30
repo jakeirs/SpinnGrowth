@@ -7,6 +7,7 @@ import { Doc } from "@/convex/_generated/dataModel";
 import Placeholder from "@tiptap/extension-placeholder";
 import TextAlign from "@tiptap/extension-text-align";
 import Underline from "@tiptap/extension-underline";
+import Link from "@tiptap/extension-link";
 import { EditorTools } from "./EditorTools";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
@@ -32,6 +33,9 @@ export const Editor = ({ isAdmin, lessonFromDb }: EditorProps) => {
         types: ["heading", "paragraph"],
       }),
       Underline,
+      Link.configure({
+        openOnClick: true,
+      }),
     ],
     editorProps: {
       attributes: {

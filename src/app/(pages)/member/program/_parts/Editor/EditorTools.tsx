@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Editor } from "@tiptap/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -62,6 +62,26 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
       editor.chain().focus().setImage({ src: url }).run();
     }
   };
+
+  const setLink = useCallback(() => {
+    const previousUrl = editor.getAttributes("link").href;
+    const url = window.prompt("URL", previousUrl);
+
+    // cancelled
+    if (url === null) {
+      return;
+    }
+
+    // empty
+    if (url === "") {
+      editor.chain().focus().extendMarkRange("link").unsetLink().run();
+
+      return;
+    }
+
+    // update link
+    editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
+  }, [editor]);
 
   const onClickSaveLessonContent = async () => {
     if (!inputLessonCode || !editor) {
@@ -292,6 +312,24 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
         </Button>
         <Button variant="ghost" size="icon" onClick={addImage}>
           <ImageIcon className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="ghost"
+
+          onClick={setLink}
+          className={
+            editor.isActive({ textAlign: "justify" }) ? "bg-gray-200" : ""
+          }
+        >
+          Set link
+        </Button>
+        <Button
+          variant="ghost"
+
+          onClick={() => editor.chain().focus().unsetLink().run()}
+          disabled={!editor.isActive("link")}
+        >
+          Unset link
         </Button>
         <Button
           variant="ghost"
