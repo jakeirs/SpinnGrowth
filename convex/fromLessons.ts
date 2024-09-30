@@ -56,7 +56,7 @@ export const uploadCourseData = mutation({
       throw new Error("Invalid title");
     }
 
-    if (typeof title !== "string" || title.trim() === "") {
+    if (typeof content !== "string" || content.trim() === "") {
       throw new Error("Invalid content");
     }
 

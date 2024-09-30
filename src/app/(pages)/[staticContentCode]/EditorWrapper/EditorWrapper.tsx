@@ -6,15 +6,15 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Switch } from "@/components/ui/switch";
 import clsx from "clsx";
-import { ContentData, Editor } from "../Editor/Editor";
+import { ContentData, Editor } from "../../member/program/_parts/Editor/Editor";
 
 interface EditorWrapperProps {
   isAdmin: boolean;
 }
 
-export const EditorCourseWrapper = ({ isAdmin }: EditorWrapperProps) => {
+export const EditorContentWrapper = ({ isAdmin }: EditorWrapperProps) => {
   const params = useParams();
-  const lessonCode = params.id as string;
+  const contentCode = params.staticContentCode as string;
 
   const saveContent = useMutation(api.fromLessons.uploadCourseData);
   const deleteLessonByLessonCode = useMutation(
@@ -24,8 +24,8 @@ export const EditorCourseWrapper = ({ isAdmin }: EditorWrapperProps) => {
   const [isAdminSwitch, setIsAdminSwitch] = useState(isAdmin);
 
   // Fetch lesson data using the getLessonById query
-  const lessonFromDb = useQuery(api.fromLessons.getLessonById, {
-    lessonCode: lessonCode,
+  const contentFromDb = useQuery(api.fromStaticContent.getStaticContentByCode, {
+    contentCode: contentCode,
   }) as ContentData;
 
   return (
@@ -44,13 +44,13 @@ export const EditorCourseWrapper = ({ isAdmin }: EditorWrapperProps) => {
           )}
         >
           <h1 className="text-6xl text-center font-bold mb-16">
-            {lessonFromDb?.title}
+            {contentFromDb?.title}
           </h1>
-          {lessonFromDb && (
+          {contentFromDb && (
             <Editor
               isAdmin={isAdminSwitch}
-              pageId={lessonCode}
-              contentFromDb={lessonFromDb}
+              pageId={contentCode}
+              contentFromDb={contentFromDb}
               saveContent={saveContent}
               deleteLessonByLessonCode={deleteLessonByLessonCode}
             />

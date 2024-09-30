@@ -34,4 +34,9 @@ export default defineSchema({
     userId: v.id("users"),
     progress: v.array(v.string()),
   }),
+  staticContent: defineTable({
+    contentCode: v.string(),
+    title: v.optional(v.string()),
+    content: v.optional(v.any()),
+  }),
 });

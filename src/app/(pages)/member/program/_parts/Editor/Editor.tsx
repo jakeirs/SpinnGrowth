@@ -26,12 +26,12 @@ interface EditorProps {
   deleteLessonByLessonCode: (args: any) => Promise<any>;
 }
 
-export const Editor = ({ 
-  isAdmin, 
-  contentFromDb, 
-  pageId, 
-  saveContent, 
-  deleteLessonByLessonCode 
+export const Editor = ({
+  isAdmin,
+  contentFromDb,
+  pageId,
+  saveContent,
+  deleteLessonByLessonCode,
 }: EditorProps) => {
   const editor = useEditor({
     immediatelyRender: false,
@@ -71,7 +71,7 @@ export const Editor = ({
 
   return (
     <div>
-      {isAdmin && contentFromDb && (
+      {isAdmin && (
         <EditorTools
           editor={editor}
           contentFromDb={contentFromDb}

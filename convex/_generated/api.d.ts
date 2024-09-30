@@ -16,6 +16,7 @@ import type {
 } from "convex/server";
 import type * as fromLessons from "../fromLessons.js";
 import type * as fromProgress from "../fromProgress.js";
+import type * as fromStaticContent from "../fromStaticContent.js";
 import type * as fromStripe from "../fromStripe.js";
 import type * as fromUsers from "../fromUsers.js";
 import type * as http from "../http.js";
@@ -31,6 +32,7 @@ import type * as http from "../http.js";
 declare const fullApi: ApiFromModules<{
   fromLessons: typeof fromLessons;
   fromProgress: typeof fromProgress;
+  fromStaticContent: typeof fromStaticContent;
   fromStripe: typeof fromStripe;
   fromUsers: typeof fromUsers;
   http: typeof http;
