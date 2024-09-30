@@ -8,6 +8,7 @@ import {
   getProcessChapterProgress,
   resumeLessonOn,
 } from "./utils";
+import { useParams } from "next/navigation";
 
 export interface SectionItemProps {
   lessonCode: string;
@@ -24,7 +25,11 @@ export const SectionItem: FC<SectionItemProps> = ({
   allLessons,
   lessonCode,
 }) => {
-  const { activeSection } = resumeLessonOn(userProgress);
+  /**
+   * Resume Lesson On | Expand on last lesson
+   */
+  const params = useParams<{ id: string }>();
+  const { activeSection } = resumeLessonOn(userProgress, params);
   const [isExpanded, setIsExpanded] = useState(activeSection === lessonCode);
 
   const processChapterProgress = useMemo(

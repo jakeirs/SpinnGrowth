@@ -10,6 +10,7 @@ import { ROUTE_NAMES } from "@/app/(pages)/routes";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { resumeLessonOn } from "./utils";
+import { useParams } from "next/navigation";
 
 interface ChapterItemProps {
   title: string;
@@ -27,7 +28,11 @@ export const ChapterItem: FC<ChapterItemProps> = ({
   lessonCode,
   userProgress,
 }) => {
-  const { activeChapter } = resumeLessonOn(userProgress);
+  /**
+   * Resume Lesson On | Expand on last lesson
+   */
+  const params = useParams<{ id: string }>();
+  const { activeChapter } = resumeLessonOn(userProgress, params);
   const [isExpanded, setIsExpanded] = useState(activeChapter === lessonCode);
 
   const lessons = useQuery(api.fromLessons.getLessonsForChapter, {

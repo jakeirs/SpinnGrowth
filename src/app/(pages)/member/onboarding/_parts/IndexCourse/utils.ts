@@ -140,14 +140,14 @@ export const calcChapterProgress = ({
   };
 };
 
-export const resumeLessonOn = (progress: string[]) => {
-  if (!progress || !progress.at(-1)) {
+export const resumeLessonOn = (progress: string[], params: { id: string }) => {
+  if (!params || !progress || !progress.at(-1)) {
     return {
       activeSection: "0",
       activeChapter: "0-0",
     };
   }
-  const lastLesson = progress.at(-1);
+  const lastLesson = params ? params.id : progress.at(-1);
   const activeSection = lastLesson?.split("-")[0];
   const activeChapter = `${activeSection}-${lastLesson?.split("-")[1]}`;
 
