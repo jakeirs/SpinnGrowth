@@ -1,6 +1,6 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { CourseIndex } from "../onboarding/_parts/IndexCourse/CourseIndex";
-import NavigationCourse from "../onboarding/_parts/NavigationCourse/NavigationCourse";
+import { CourseIndex } from "./_parts/IndexCourse/CourseIndex";
+import NavigationCourse from "./_parts/NavigationCourse/NavigationCourse";
 
 export default function IndexPageLayout({
   children,

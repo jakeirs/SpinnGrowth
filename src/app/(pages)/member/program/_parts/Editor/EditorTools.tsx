@@ -24,7 +24,7 @@ import {
 } from "lucide-react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { calcNextLesson } from "../../../onboarding/_parts/IndexCourse/utils";
+import { calcNextLesson } from "../IndexCourse/utils";
 
 interface EditorToolsProps {
   editor: Editor | null;
@@ -338,13 +338,6 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
             <LinkIcon className="h-4 w-4" />
           </Button>
         </div>
-        <Button
-          variant="ghost"
-          onClick={() => editor.chain().focus().unsetMark("link").run()}
-          disabled={!editor.isActive("link")}
-        >
-          Unset link
-        </Button>
         <Button
           variant="ghost"
           size="icon"
