@@ -20,7 +20,7 @@ export default function CoursePage() {
 
   // Fetch lesson data using the getLessonById query
   const lessonFromDb = useQuery(api.fromLessons.getLessonById, {
-    lessonId: selectedLessonId,
+    lessonCode: selectedLessonId,
   });
 
   return (

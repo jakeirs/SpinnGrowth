@@ -156,3 +156,22 @@ export const resumeLessonOn = (progress: string[], params: { id: string }) => {
     activeChapter,
   };
 };
+
+export const calcNextLesson = (currentLesson: string) => {
+  if (!currentLesson || !currentLesson.split("-")[2]) return "0-0-0";
+
+  // Split the string into parts
+  const parts = currentLesson.split("-");
+
+  // Get the last part (the number to increment)
+  const lastPart = parts[parts.length - 1];
+
+  // Convert to integer, increment, and convert back to string
+  const nextLessonNumber = (parseInt(lastPart) + 1).toString();
+
+  // Construct the base string
+  const string = `${parts[0]}-${parts[1]}-${nextLessonNumber}`;
+
+  // Return the base string with the incremented number
+  return string;
+};

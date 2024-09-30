@@ -56,6 +56,7 @@ export const Editor = ({ isAdmin, lessonFromDb }: EditorProps) => {
           editor={editor}
           title={lessonFromDb.title}
           lessonCode={lessonId}
+          nextLessonCode={lessonFromDb.nextLesson}
           notes={lessonFromDb.notes}
         />
       )}

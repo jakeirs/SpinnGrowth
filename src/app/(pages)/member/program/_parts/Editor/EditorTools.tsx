@@ -23,18 +23,21 @@ import {
 } from "lucide-react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { calcNextLesson } from "../../../onboarding/_parts/IndexCourse/utils";
 
 interface EditorToolsProps {
   editor: Editor | null;
   title: string;
   lessonCode: string;
   notes?: string;
+  nextLessonCode?: string;
 }
 
 export const EditorTools: React.FC<EditorToolsProps> = ({
   editor,
   title = "",
   lessonCode,
+  nextLessonCode,
   notes,
 }) => {
   if (!editor) {
@@ -46,9 +49,12 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
     api.fromLessons.deleteLessonByLessonCode
   );
 
+  const nextLesson = nextLessonCode || calcNextLesson(lessonCode);
+  console.log("nextLessonnextLesson", nextLessonCode);
   const [inputTitle, setInputTitle] = useState(title);
   const [inputLessonCode, setInputLessonCode] = useState(lessonCode);
   const [inputNotes, setNotes] = useState(notes);
+  const [inputNextLesson, setInputNextLesson] = useState(nextLesson);
 
   const addImage = () => {
     const url = window.prompt("Enter the URL of the image:");
@@ -73,6 +79,7 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
         notes: inputNotes,
         title: inputTitle,
         content: json,
+        nextLesson: inputNextLesson,
       });
       console.log(result);
     } catch (error) {
@@ -107,6 +114,9 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
   const handleLessonCodeChange = (value: string) => {
     setInputLessonCode(value);
   };
+  const handleNextLessonChange = (value: string) => {
+    setInputNextLesson(value);
+  };
 
   return (
     <>
@@ -130,6 +140,13 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
           placeholder="Lesson Code"
           value={inputLessonCode}
           onChange={(e) => handleLessonCodeChange(e.target.value)}
+          className="w-full"
+        />
+        <Input
+          type="text"
+          placeholder="Next Lesson Code"
+          value={inputNextLesson}
+          onChange={(e) => handleNextLessonChange(e.target.value)}
           className="w-full"
         />
       </div>

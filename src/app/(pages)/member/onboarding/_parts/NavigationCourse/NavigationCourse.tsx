@@ -19,10 +19,17 @@ export const NavigationCourse: React.FC = () => {
   const lessonProgress = useQuery(api.fromProgress.getUserProgress, {
     sessionId: sessionId!,
   });
+
   let lessonComplete = false;
   if (lessonProgress) {
     lessonComplete = !!lessonProgress.includes(lessonCode);
   }
+
+  const lesson = useQuery(api.fromLessons.getLessonById, {
+    lessonCode: params.id!,
+  });
+
+  const nextLessonCode = lesson?.nextLesson;
 
   const handleToggle = async (checked: boolean) => {
     if (sessionId) {
@@ -34,7 +41,9 @@ export const NavigationCourse: React.FC = () => {
 
         if (result.success) {
           result.complete &&
-            router.push(`/member/${ROUTE_NAMES.MemberProgram}/0-0-1`);
+            router.push(
+              `/member/${ROUTE_NAMES.MemberProgram}/${nextLessonCode ? nextLessonCode : lessonCode}`
+            );
         } else {
           console.error("Failed to update lesson progress:", result.message);
         }

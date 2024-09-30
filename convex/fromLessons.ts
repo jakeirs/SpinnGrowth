@@ -1,4 +1,3 @@
-import { insertLessons } from "./fromLessons";
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { Doc } from "./_generated/dataModel";
@@ -42,11 +41,12 @@ export const uploadCourseData = mutation({
   args: {
     lessonCode: v.string(),
     title: v.string(),
-    notes: v.string(),
     content: v.any(),
+    nextLesson: v.optional(v.string()),
+    notes: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const { title, lessonCode, notes, content } = args;
+    const { title, lessonCode, notes, content, nextLesson } = args;
 
     if (typeof lessonCode !== "string" || lessonCode.trim() === "") {
       throw new Error("Invalid lessonId");
@@ -73,6 +73,7 @@ export const uploadCourseData = mutation({
           content,
           title,
           notes,
+          nextLesson,
         });
         return { success: true };
       } catch (err) {
@@ -87,6 +88,8 @@ export const uploadCourseData = mutation({
         lessonCode,
         content,
         title,
+        nextLesson,
+        notes,
       });
       return { success: true, lessonRecordId };
     } catch (err) {
@@ -96,6 +99,7 @@ export const uploadCourseData = mutation({
   },
 });
 
+/** to delete */
 export const retrieveLessonCourse = mutation({
   args: {
     lessonId: v.string(),
@@ -125,18 +129,18 @@ export const retrieveLessonCourse = mutation({
  * Query Lesson by lessonId
  */
 export const getLessonById = query({
-  args: { lessonId: v.string() },
+  args: { lessonCode: v.string() },
   handler: async (ctx, args) => {
-    const { lessonId } = args;
+    const { lessonCode } = args;
 
-    if (typeof lessonId !== "string" || lessonId.trim() === "") {
+    if (typeof lessonCode !== "string" || lessonCode.trim() === "") {
       throw new Error("Invalid lessonCode");
     }
 
     try {
       const lesson = await ctx.db
         .query("lessons")
-        .withIndex("by_lessonCode", (q) => q.eq("lessonCode", lessonId))
+        .withIndex("by_lessonCode", (q) => q.eq("lessonCode", lessonCode))
         .first();
 
       return lesson;
@@ -145,7 +149,7 @@ export const getLessonById = query({
       throw err;
     }
   },
-})
+});
 
 // Query to get all lessons sorted by lessonCode in ascending order
 export const getAllLessons = query({

@@ -27,6 +27,7 @@ export default defineSchema({
     title: v.string(),
     content: v.optional(v.any()),
     notes: v.optional(v.string()),
+    nextLesson: v.optional(v.string()),
   }).index("by_lessonCode", ["lessonCode"]),
 
   progress: defineTable({
