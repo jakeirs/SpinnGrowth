@@ -18,57 +18,12 @@ export default function CoursePage() {
   const isAdmin = userRole?.role === "admin";
 
   const [isAdminSwitch, setIsAdminSwitch] = useState(isAdmin);
-  const [completed, setCompleted] = useState<Record<string, boolean>>({});
-  const [selectedLesson, setSelectedLesson] =
-    useState<SelectedLessonType>(selectedLessonId);
-  const [isLessonComplete, setIsLessonComplete] = useState(false);
 
-  const setProgressOfProgram = useMutation(
-    api.fromProgress.setProgressOfProgram
-  );
-  const userProgressFromDb = useQuery(api.fromProgress.getUserProgress, {
-    sessionId: sessionId!,
-  });
   // Fetch lesson data using the getLessonById query
   const lessonFromDb = useQuery(api.fromLessons.getLessonById, {
     lessonId: selectedLessonId,
   });
 
-  useEffect(() => {
-    setSelectedLesson(selectedLessonId);
-  }, [selectedLessonId]);
-
-  useEffect(() => {
-    if (userProgressFromDb) {
-      const newCompleted: Record<string, boolean> = {};
-      userProgressFromDb.forEach((lessonCode: string) => {
-        newCompleted[lessonCode] = true;
-      });
-      setCompleted(newCompleted);
-    }
-  }, [userProgressFromDb]);
-
-  useEffect(() => {
-    if (selectedLesson && completed) {
-      setIsLessonComplete(!!completed[selectedLesson]);
-    }
-  }, [selectedLesson, completed]);
-
-  const handleLessonCompletion = async (checked: boolean) => {
-    if (selectedLesson && sessionId) {
-      const result = await setProgressOfProgram({
-        lessonCode: selectedLesson,
-        sessionId: sessionId,
-      });
-      if (result.success && result.complete !== undefined) {
-        setCompleted((prev) => ({
-          ...prev,
-          [selectedLesson]: result.complete,
-        }));
-        setIsLessonComplete(result.complete);
-      }
-    }
-  };
   return (
     <div className="flex">
       <main className="flex-1 p-6 flex flex-col">

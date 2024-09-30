@@ -39,7 +39,7 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
     return null;
   }
 
-  const saveLessonToDb = useMutation(api.fromLessons.uploadCourseData);
+  const uploadCourseData = useMutation(api.fromLessons.uploadCourseData);
   const deleteLessonByLessonCode = useMutation(
     api.fromLessons.deleteLessonByLessonCode
   );
@@ -65,7 +65,7 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
 
     try {
       console.log("inputLessonCode", inputLessonCode);
-      const result = await saveLessonToDb({
+      const result = await uploadCourseData({
         lessonCode: inputLessonCode,
         content: json,
         title: inputTitle, // Now using the title state
