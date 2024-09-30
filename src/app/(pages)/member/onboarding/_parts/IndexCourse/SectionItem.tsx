@@ -1,5 +1,5 @@
 "use client";
-import { FC, useState, useMemo } from "react";
+import { FC, useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChapterItem } from "./ChapterItem";
 import { CourseChapters } from "@/convex/fromLessons";
@@ -29,8 +29,15 @@ export const SectionItem: FC<SectionItemProps> = ({
    * Resume Lesson On | Expand on last lesson
    */
   const params = useParams<{ id: string }>();
-  const { activeSection } = resumeLessonOn(userProgress, params);
+  const { activeSection } = useMemo(
+    () => resumeLessonOn(userProgress, params),
+    [params.id, userProgress]
+  );
   const [isExpanded, setIsExpanded] = useState(activeSection === lessonCode);
+
+  useEffect(() => {
+    setIsExpanded(activeSection === lessonCode);
+  }, [params.id]);
 
   const processChapterProgress = useMemo(
     () => getProcessChapterProgress(allLessons, userProgress),

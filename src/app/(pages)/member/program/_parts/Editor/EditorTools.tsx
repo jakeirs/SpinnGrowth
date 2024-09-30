@@ -49,11 +49,11 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
     api.fromLessons.deleteLessonByLessonCode
   );
 
-  const nextLesson = nextLessonCode || calcNextLesson(lessonCode);
-  console.log("nextLessonnextLesson", nextLessonCode);
   const [inputTitle, setInputTitle] = useState(title);
   const [inputLessonCode, setInputLessonCode] = useState(lessonCode);
   const [inputNotes, setNotes] = useState(notes);
+
+  const nextLesson = nextLessonCode || calcNextLesson(lessonCode);
   const [inputNextLesson, setInputNextLesson] = useState(nextLesson);
 
   const addImage = () => {
