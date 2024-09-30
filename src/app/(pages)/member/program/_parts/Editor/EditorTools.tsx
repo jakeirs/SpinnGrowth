@@ -93,16 +93,14 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
     }
 
     const json = editor.getJSON();
-
     try {
       const result = await saveContent({
-        lessonCode: inputContentCode,
+        contentCode: inputContentCode,
         notes: inputNotes,
         title: inputTitle,
         content: json,
         nextLesson: inputNextLesson,
       });
-      console.log(result);
     } catch (error) {
       console.error("Error saving content:", error);
     }
@@ -119,7 +117,6 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
       const result = await deleteLessonByLessonCode({
         lessonCode: inputContentCode,
       });
-      console.log(result);
     } catch (error) {
       console.error("Error saving content:", error);
     }
@@ -158,7 +155,7 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
         />
         <Input
           type="text"
-          placeholder="Lesson Code"
+          placeholder="Content Code"
           value={inputContentCode}
           onChange={(e) => handleLessonCodeChange(e.target.value)}
           className="w-full"

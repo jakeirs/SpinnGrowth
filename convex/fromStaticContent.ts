@@ -54,22 +54,27 @@ export const saveStaticContent = mutation({
     contentCode: v.string(),
     title: v.string(),
     content: v.any(),
+    notes: v.optional(v.any()), // added because in <EditorTools /> needed
+    nextLesson: v.optional(v.any()), // added because in <EditorTools /> needed
   },
   handler: async (ctx, args) => {
     {
       /**@todo check session */
     }
-    const { title, content, contentCode } = args;
-
-    if (typeof contentCode !== "string" || contentCode.trim() === "") {
+    const { title, content, contentCode: contentCodeRandomCase } = args;
+    if (
+      typeof contentCodeRandomCase !== "string" ||
+      contentCodeRandomCase.trim() === ""
+    ) {
       throw new Error("Invalid contentCode");
     }
+    const contentCode = contentCodeRandomCase.toLocaleLowerCase();
 
     if (typeof title !== "string" || title.trim() === "") {
       throw new Error("Invalid title");
     }
 
-    if (typeof content !== "string" || content.trim() === "") {
+    if (typeof content === undefined) {
       throw new Error("Invalid content");
     }
 

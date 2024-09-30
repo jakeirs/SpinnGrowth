@@ -40,7 +40,7 @@ export const EditorContentWrapper = ({ isAdmin }: EditorWrapperProps) => {
         <main
           className={clsx(
             "flex-1 p-6 flex flex-col ",
-            isAdminSwitch ? "max-w-[900px]" : "max-w-[665px]"
+            isAdminSwitch ? "max-w-[900px]" : "max-w-[1000px]"
           )}
         >
           <h1 className="text-6xl text-center font-bold mb-16">

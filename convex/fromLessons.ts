@@ -39,16 +39,15 @@ export const deleteLessonByLessonCode = mutation({
 
 export const uploadCourseData = mutation({
   args: {
-    lessonCode: v.string(),
+    contentCode: v.string(),
     title: v.string(),
     content: v.any(),
     nextLesson: v.optional(v.string()),
     notes: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const { title, lessonCode, notes, content, nextLesson } = args;
-
-    if (typeof lessonCode !== "string" || lessonCode.trim() === "") {
+    const { title, contentCode, notes, content, nextLesson } = args;
+    if (typeof contentCode !== "string" || contentCode.trim() === "") {
       throw new Error("Invalid lessonId");
     }
 
@@ -56,20 +55,20 @@ export const uploadCourseData = mutation({
       throw new Error("Invalid title");
     }
 
-    if (typeof content !== "string" || content.trim() === "") {
+    if (typeof content !== "object") {
       throw new Error("Invalid content");
     }
 
     const existing = await ctx.db
       .query("lessons")
-      .filter((q) => q.eq(q.field("lessonCode"), lessonCode))
+      .filter((q) => q.eq(q.field("lessonCode"), contentCode))
       .first();
 
     if (existing) {
       try {
         // patch
         await ctx.db.patch(existing._id, {
-          lessonCode,
+          lessonCode: contentCode,
           content,
           title,
           notes,
@@ -85,7 +84,7 @@ export const uploadCourseData = mutation({
     try {
       // insertLessons
       const lessonRecordId = await ctx.db.insert("lessons", {
-        lessonCode,
+        lessonCode: contentCode,
         content,
         title,
         nextLesson,
