@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Switch } from "@/components/ui/switch";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -11,11 +11,17 @@ import clsx from "clsx";
 
 export default function CoursePage() {
   const params = useParams();
+  const router = useRouter();
   const selectedLessonId = params.id as string;
 
   const [sessionId] = useSessionId();
+
   const userRole = useQuery(api.fromUsers.getRole, { sessionId: sessionId! });
   const isAdmin = userRole?.role === "admin";
+  const isMember = userRole?.role === "admin" || userRole?.role === "member";
+  if (userRole && !isMember) {
+    router.push("/");
+  }
 
   const [isAdminSwitch, setIsAdminSwitch] = useState(isAdmin);
 
