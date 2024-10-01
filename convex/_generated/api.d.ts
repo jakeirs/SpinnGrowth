@@ -14,6 +14,7 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as fromImages from "../fromImages.js";
 import type * as fromLessons from "../fromLessons.js";
 import type * as fromProgress from "../fromProgress.js";
 import type * as fromStaticContent from "../fromStaticContent.js";
@@ -30,6 +31,7 @@ import type * as http from "../http.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  fromImages: typeof fromImages;
   fromLessons: typeof fromLessons;
   fromProgress: typeof fromProgress;
   fromStaticContent: typeof fromStaticContent;
