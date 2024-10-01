@@ -13,7 +13,7 @@ import { Step } from "prosemirror-transform";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { title } from "process";
+import Youtube from '@tiptap/extension-youtube';
 
 const CustomImage = Image.extend({
   addAttributes() {
@@ -114,6 +114,10 @@ const CustomEditor = () => {
         const imageUrl = await getImageURL({ storageId });
         return { storageId, url: imageUrl };
       }),
+      Youtube.configure({
+        controls: true,
+        nocookie: true,
+      }),
     ],
     editorProps: {
       attributes: {
@@ -150,6 +154,15 @@ const CustomEditor = () => {
     },
   });
 
+  const addYouTubeEmbed = () => {
+    const url = prompt("Enter YouTube URL:");
+    if (url) {
+      editor?.commands.setYoutubeVideo({
+        src: url,
+      });
+    }
+  };
+
   return (
     <div className="p-11 flex flex-col h-screen prose max-w-none p-4 focus:outline-none min-h-[300px] border rounded-lg">
       <EditorContent editor={editor} className="tiptap-editor min-h-[300px]" />
@@ -157,6 +170,7 @@ const CustomEditor = () => {
         You can now paste images directly into the editor! Deleted images will
         be removed from storage.
       </p>
+      <Button onClick={addYouTubeEmbed} className="mt-4">Add YouTube Video</Button>
     </div>
   );
 };
