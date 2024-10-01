@@ -15,7 +15,9 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 
 const createCustomImagePaste = (
-  uploadImage: (args: { file: File }) => Promise<string>
+  uploadImage: (
+    file: File
+  ) => Promise<{ url: string | null; storageId: string }>
 ) => {
   return Extension.create({
     name: "customImagePaste",
@@ -35,18 +37,19 @@ const createCustomImagePaste = (
 
                   if (file) {
                     // Use the uploadImage mutation to upload the file
-                    uploadImage({ file })
-                      .then((imageUrl) => {
+                    uploadImage(file)
+                      .then(({ url, storageId }) => {
                         // Create an image node with the uploaded URL
                         const node = view.state.schema.nodes.image.create({
-                          src: imageUrl,
+                          src: url,
+                          id: storageId,
                         });
-
+                        // update the view
                         const transaction =
                           view.state.tr.replaceSelectionWith(node);
                         view.dispatch(transaction);
                       })
-                      .catch((error) => {
+                      .catch((error: Error) => {
                         console.error("Failed to upload image:", error);
                       });
 
@@ -64,8 +67,9 @@ const createCustomImagePaste = (
 };
 
 const CustomEditor = () => {
-  const uploadImage = useMutation(api.fromImages.generateUploadUrl);
+  const generateUploadUrl = useMutation(api.fromImages.generateUploadUrl);
   const deleteImage = useMutation(api.fromImages.deleteImage);
+  const getImageURL = useMutation(api.fromImages.getImageURL);
 
   const editor = useEditor({
     extensions: [
@@ -74,7 +78,21 @@ const CustomEditor = () => {
         inline: true,
         allowBase64: true,
       }),
-      createCustomImagePaste(uploadImage),
+      createCustomImagePaste(async (file: File) => {
+        const postUrl = await generateUploadUrl();
+        // Here you would typically upload the file to the URL
+
+        const result = await fetch(postUrl, {
+          method: "POST",
+          headers: { "Content-Type": file!.type },
+          body: file,
+        });
+        const { storageId } = await result.json();
+
+        // We'll just return the URL
+        const imageUrl = await getImageURL({ storageId });
+        return { storageId, url: imageUrl };
+      }),
     ],
     editorProps: {
       attributes: {
@@ -89,19 +107,18 @@ const CustomEditor = () => {
           const deletedNodes = transaction.steps.filter((step: Step) => {
             return "slice" in step && (step as any).slice.content.size === 0;
           });
-          
+
           deletedNodes.forEach((step: Step) => {
             const { from, to } = step as any;
             const deletedContent = transaction.docs[0].slice(from, to);
 
             deletedContent.content.forEach((node: any) => {
               if (node.type.name === "image") {
-                const imageUrl = node.attrs.src;
-                console.log("Image deleted:", imageUrl);
+                const imageStoreId = node.attrs.id;
+                console.log("Image deleted:", node.attrs, imageStoreId, node);
 
                 deleteImage({
-                  storageId:
-                    "kg253mf28yfajj1m1dtayd2cg571rhyy" as Id<"_storage">,
+                  storageId: imageStoreId as Id<"_storage">,
                 }).catch((error: Error) => {
                   console.error("Failed to DELETE image from storage:", error);
                 });

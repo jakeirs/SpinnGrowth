@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { Id } from "./_generated/dataModel";
 
 export const generateUploadUrl = mutation(async (ctx) => {
   return await ctx.storage.generateUploadUrl();
@@ -15,7 +16,7 @@ export const sendImage = mutation({
   },
 });
 
-export const getPhoto = query({
+export const queryImage = query({
   args: {
     title: v.string(),
   },
@@ -29,6 +30,21 @@ export const getPhoto = query({
     if (storageId) {
       return await ctx.storage.getUrl(storageId);
     }
+    return "";
+  },
+});
+
+export const getImageURL = mutation({
+  args: {
+    storageId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const { storageId } = args;
+
+    if (storageId) {
+      return await ctx.storage.getUrl(storageId as Id<"_storage">);
+    }
+
     return "";
   },
 });

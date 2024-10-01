@@ -1,17 +1,14 @@
 "use client";
 
 import { FormEvent, useRef, useState } from "react";
-import { useMutation, useQueries, useQuery } from "convex/react";
+import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
 export default function OnboardingPage() {
   const generateUploadUrl = useMutation(api.fromImages.generateUploadUrl);
   const sendImage = useMutation(api.fromImages.sendImage);
-  const getImageURL = useQuery(api.fromImages.getPhoto, {
-    title: "Title-6941",
-  });
+  const getImageURL = useMutation(api.fromImages.getImageURL);
 
   const imageInput = useRef<HTMLInputElement>(null);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -36,11 +33,8 @@ export default function OnboardingPage() {
     imageInput.current!.value = "";
   }
 
-  const getPhoto = async () => {};
-
   return (
     <div>
-      <Image src={getImageURL!} width="200" height="200" alt="AEL" />
       <form onSubmit={handleSendImage}>
         <input
           type="file"
