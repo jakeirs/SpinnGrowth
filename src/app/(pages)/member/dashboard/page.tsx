@@ -13,7 +13,7 @@ import { Step } from "prosemirror-transform";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import Youtube from '@tiptap/extension-youtube';
+import Youtube from "@tiptap/extension-youtube";
 
 const CustomImage = Image.extend({
   addAttributes() {
@@ -170,7 +170,9 @@ const CustomEditor = () => {
         You can now paste images directly into the editor! Deleted images will
         be removed from storage.
       </p>
-      <Button onClick={addYouTubeEmbed} className="mt-4">Add YouTube Video</Button>
+      <Button onClick={addYouTubeEmbed} className="mt-4">
+        Add YouTube Video
+      </Button>
     </div>
   );
 };
