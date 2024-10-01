@@ -13,6 +13,27 @@ import { Step } from "prosemirror-transform";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { title } from "process";
+
+const CustomImage = Image.extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      storageId: {
+        default: null,
+        parseHTML: (element) => element.getAttribute("data-storage-id"),
+        renderHTML: (attributes) => {
+          if (!attributes.storageId) {
+            return {};
+          }
+          return {
+            "data-storage-id": attributes.storageId,
+          };
+        },
+      },
+    };
+  },
+});
 
 const createCustomImagePaste = (
   uploadImage: (
@@ -21,7 +42,6 @@ const createCustomImagePaste = (
 ) => {
   return Extension.create({
     name: "customImagePaste",
-
     addProseMirrorPlugins() {
       return [
         new Plugin({
@@ -39,14 +59,15 @@ const createCustomImagePaste = (
                     // Use the uploadImage mutation to upload the file
                     uploadImage(file)
                       .then(({ url, storageId }) => {
-                        // Create an image node with the uploaded URL
-                        const node = view.state.schema.nodes.image.create({
-                          src: url,
-                          id: storageId,
-                        });
-                        // update the view
+                        // Create an image node with the uploaded URL and storageId
+                        const nodeToCreate =
+                          view.state.schema.nodes.image.create({
+                            src: url,
+                            storageId,
+                          });
+
                         const transaction =
-                          view.state.tr.replaceSelectionWith(node);
+                          view.state.tr.replaceSelectionWith(nodeToCreate);
                         view.dispatch(transaction);
                       })
                       .catch((error: Error) => {
@@ -74,7 +95,7 @@ const CustomEditor = () => {
   const editor = useEditor({
     extensions: [
       StarterKit,
-      Image.configure({
+      CustomImage.configure({
         inline: true,
         allowBase64: true,
       }),
@@ -114,8 +135,7 @@ const CustomEditor = () => {
 
             deletedContent.content.forEach((node: any) => {
               if (node.type.name === "image") {
-                const imageStoreId = node.attrs.id;
-                console.log("Image deleted:", node.attrs, imageStoreId, node);
+                const imageStoreId = node.attrs.storageId;
 
                 deleteImage({
                   storageId: imageStoreId as Id<"_storage">,
