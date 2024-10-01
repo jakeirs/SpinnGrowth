@@ -37,10 +37,8 @@ const CustomImagePaste = Extension.create({
                   // Set up the onload event handler for the reader
                   // This function will be called when the file is successfully read
                   reader.onload = (e: ProgressEvent<FileReader>) => {
-                    const base64Image = e.target?.result;
+                    const base64Image = e.target?.result; // e.target === FileReader | e.target.results === data:image/png;base64
 
-                    console.log(e)
-                    
                     // Check if the result is a string (it should be a base64 encoded image)
                     if (typeof base64Image === "string") {
                       console.log("base64Image", base64Image);
