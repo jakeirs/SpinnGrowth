@@ -37,7 +37,10 @@ export const Editor = ({
     immediatelyRender: false,
     extensions: [
       StarterKit,
-      Image,
+      Image.configure({
+        inline: true,
+        allowBase64: true,
+      }),
       Placeholder.configure({
         placeholder: "Start writing...",
       }),
