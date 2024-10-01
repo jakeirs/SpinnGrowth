@@ -32,3 +32,12 @@ export const getPhoto = query({
     return "";
   },
 });
+
+export const deleteImage = mutation({
+  args: {
+    storageId: v.id("_storage"),
+  },
+  handler: async (ctx, { storageId }) => {
+    return await ctx.storage.delete(storageId);
+  },
+});

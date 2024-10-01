@@ -9,62 +9,63 @@ import Image from "@tiptap/extension-image";
 import { Extension } from "@tiptap/core";
 import { Plugin, PluginKey } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
-import { useMutation } from "../../convex/_generated/react";
+import { Step } from "prosemirror-transform";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 
-const CustomImagePaste = Extension.create({
-  name: "customImagePaste",
+const createCustomImagePaste = (
+  uploadImage: (args: { file: File }) => Promise<string>
+) => {
+  return Extension.create({
+    name: "customImagePaste",
 
-  addProseMirrorPlugins() {
-    return [
-      new Plugin({
-        key: new PluginKey("customImagePaste"),
-        props: {
-          handlePaste: (view: EditorView, event: ClipboardEvent) => {
-            const items = Array.from(event.clipboardData?.items || []);
+    addProseMirrorPlugins() {
+      return [
+        new Plugin({
+          key: new PluginKey("customImagePaste"),
+          props: {
+            handlePaste: (view: EditorView, event: ClipboardEvent) => {
+              const items = Array.from(event.clipboardData?.items || []);
 
-            for (const item of items) {
-              if (item.type.indexOf("image") === 0) {
-                event.preventDefault();
-                const blob = item.getAsFile();
+              for (const item of items) {
+                if (item.type.indexOf("image") === 0) {
+                  event.preventDefault();
+                  const file = item.getAsFile();
 
-                if (blob) {
-                  const reader = new FileReader();
+                  if (file) {
+                    // Use the uploadImage mutation to upload the file
+                    uploadImage({ file })
+                      .then((imageUrl) => {
+                        // Create an image node with the uploaded URL
+                        const node = view.state.schema.nodes.image.create({
+                          src: imageUrl,
+                        });
 
-                  reader.onload = (e: ProgressEvent<FileReader>) => {
-                    const base64Image = e.target?.result;
-
-                    if (typeof base64Image === "string") {
-                      console.log("base64Image", base64Image);
-
-                      const node = view.state.schema.nodes.image.create({
-                        src: base64Image,
+                        const transaction =
+                          view.state.tr.replaceSelectionWith(node);
+                        view.dispatch(transaction);
+                      })
+                      .catch((error) => {
+                        console.error("Failed to upload image:", error);
                       });
 
-                      const transaction =
-                        view.state.tr.replaceSelectionWith(node);
-
-                      view.dispatch(transaction);
-
-                      console.log("transaction", transaction);
-                    }
-                  };
-
-                  reader.readAsDataURL(blob);
+                    return true;
+                  }
                 }
-                return true;
               }
-            }
-            return false;
+              return false;
+            },
           },
-        },
-      }),
-    ];
-  },
-});
+        }),
+      ];
+    },
+  });
+};
 
 const CustomEditor = () => {
-  const uploadImage = useMutation("uploadImage");
-  const deleteImage = useMutation("deleteImage");
+  const uploadImage = useMutation(api.fromImages.generateUploadUrl);
+  const deleteImage = useMutation(api.fromImages.deleteImage);
 
   const editor = useEditor({
     extensions: [
@@ -73,7 +74,7 @@ const CustomEditor = () => {
         inline: true,
         allowBase64: true,
       }),
-      CustomImagePaste,
+      createCustomImagePaste(uploadImage),
     ],
     editorProps: {
       attributes: {
@@ -84,21 +85,25 @@ const CustomEditor = () => {
     content: "<p>Start typing here...</p>",
     onCreate: ({ editor }) => {
       editor.on("update", ({ editor, transaction }) => {
-      
         if (transaction.docChanged) {
-          const deletedNodes = transaction.steps.filter(
-            (step) => step.slice && step.slice.content.size === 0
-          );
-          deletedNodes.forEach((step) => {
+          const deletedNodes = transaction.steps.filter((step: Step) => {
+            return "slice" in step && (step as any).slice.content.size === 0;
+          });
+          
+          deletedNodes.forEach((step: Step) => {
             const { from, to } = step as any;
             const deletedContent = transaction.docs[0].slice(from, to);
-            deletedContent.content.forEach((node) => {
+
+            deletedContent.content.forEach((node: any) => {
               if (node.type.name === "image") {
                 const imageUrl = node.attrs.src;
                 console.log("Image deleted:", imageUrl);
-                // Call the deleteImage mutation to remove the image from storage
-                deleteImage({ imageUrl }).catch((error) => {
-                  console.error("Failed to delete image from storage:", error);
+
+                deleteImage({
+                  storageId:
+                    "kg253mf28yfajj1m1dtayd2cg571rhyy" as Id<"_storage">,
+                }).catch((error: Error) => {
+                  console.error("Failed to DELETE image from storage:", error);
                 });
               }
             });
