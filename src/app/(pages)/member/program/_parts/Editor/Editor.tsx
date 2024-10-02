@@ -2,7 +2,6 @@
 
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import Image from "@tiptap/extension-image";
 import Youtube from "@tiptap/extension-youtube";
 import Placeholder from "@tiptap/extension-placeholder";
 import TextAlign from "@tiptap/extension-text-align";
@@ -10,6 +9,11 @@ import Underline from "@tiptap/extension-underline";
 import Link from "@tiptap/extension-link";
 import { EditorTools } from "./EditorTools";
 import { useEffect } from "react";
+import {
+  createCustomImagePaste,
+  CustomImage,
+  onEditDeleteImageFromStorageConvex,
+} from "./custom-extension";
 
 export interface ContentData {
   content: string;
@@ -24,6 +28,9 @@ interface EditorProps {
   pageId: string;
   saveContent: (args: any) => Promise<any>;
   deleteLessonByLessonCode: (args: any) => Promise<any>;
+  deleteImage: (args: any) => Promise<any>;
+  generateUploadUrl: () => Promise<any>;
+  getImageURL: (args: any) => Promise<any>;
 }
 
 export const Editor = ({
@@ -32,14 +39,20 @@ export const Editor = ({
   pageId,
   saveContent,
   deleteLessonByLessonCode,
+  deleteImage,
+  generateUploadUrl,
+  getImageURL,
 }: EditorProps) => {
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
       StarterKit,
-      Image.configure({
+      CustomImage.configure({
         inline: true,
         allowBase64: true,
+        HTMLAttributes: {
+          class: "mx-auto",
+        },
       }),
       Placeholder.configure({
         placeholder: "Start writing...",
@@ -54,6 +67,22 @@ export const Editor = ({
           rel: "noopener noreferrer",
           target: "_blank",
         },
+      }),
+      /** Another Extension */
+      createCustomImagePaste(async (file: File) => {
+        const postUrl = await generateUploadUrl();
+        // Here you would typically upload the file to the URL
+
+        const result = await fetch(postUrl, {
+          method: "POST",
+          headers: { "Content-Type": file!.type },
+          body: file,
+        });
+        const { storageId } = await result.json();
+
+        // We'll just return the URL
+        const imageUrl = await getImageURL({ storageId });
+        return { storageId, url: imageUrl };
       }),
       Youtube.configure({
         controls: true,
@@ -74,6 +103,11 @@ export const Editor = ({
       },
     },
     editable: isAdmin,
+    onCreate: ({ editor }) => {
+      editor.on("update", ({ editor, transaction }) => {
+        onEditDeleteImageFromStorageConvex({ transaction, deleteImage });
+      });
+    },
   });
 
   useEffect(() => {

@@ -16,12 +16,15 @@ export const EditorCourseWrapper = ({ isAdmin }: EditorWrapperProps) => {
   const params = useParams();
   const lessonCode = params.id as string;
 
+  const generateUploadUrl = useMutation(api.fromImages.generateUploadUrl);
+  const deleteImage = useMutation(api.fromImages.deleteImage);
+  const getImageURL = useMutation(api.fromImages.getImageURL);
   const saveContent = useMutation(api.fromLessons.uploadCourseData);
   const deleteLessonByLessonCode = useMutation(
     api.fromLessons.deleteLessonByLessonCode
   );
 
-  const [isAdminSwitch, setIsAdminSwitch] = useState(isAdmin);
+  const [isAdminSwitch, setIsAdminSwitch] = useState(false);
 
   // Fetch lesson data using the getLessonById query
   const lessonFromDb = useQuery(api.fromLessons.getLessonById, {
@@ -53,6 +56,9 @@ export const EditorCourseWrapper = ({ isAdmin }: EditorWrapperProps) => {
               contentFromDb={lessonFromDb}
               saveContent={saveContent}
               deleteLessonByLessonCode={deleteLessonByLessonCode}
+              generateUploadUrl={generateUploadUrl}
+              deleteImage={deleteImage}
+              getImageURL={getImageURL}
             />
           )}
         </main>
