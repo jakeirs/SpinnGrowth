@@ -17,19 +17,32 @@ export type CourseSection = {
 
 export const deleteLessonByLessonCode = mutation({
   args: {
-    lessonCode: v.string(),
+    contentCode: v.string(),
   },
   handler: async (ctx, args) => {
-    const { lessonCode } = args;
+    const { contentCode } = args;
 
     const lesson = await ctx.db
       .query("lessons")
-      .filter((q) => q.eq(q.field("lessonCode"), lessonCode))
+      .filter((q) => q.eq(q.field("lessonCode"), contentCode))
       .unique();
 
     // If the lesson is found, delete it
     if (lesson) {
+      // also delete all images for that content from storage:
+      const allStorageId = await ctx.db
+        .query("images")
+        .filter((q) => q.eq(q.field("contentCode"), contentCode))
+        .collect();
+      if (allStorageId.length > 0) {
+        for (const image of allStorageId) {
+          await ctx.storage.delete(image.storageId);
+          await ctx.db.delete(image._id);
+        }
+      }
+
       await ctx.db.delete(lesson._id);
+
       return { success: true, message: "Lesson deleted successfully" };
     } else {
       return { success: false, message: "Lesson not found" };

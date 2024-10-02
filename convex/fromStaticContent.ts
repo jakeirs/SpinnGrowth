@@ -18,7 +18,25 @@ export const deleteContentByCode = mutation({
 
     // If staticContent is found, delete it
     if (staticContent) {
+      // also delete all images for that content from storage:
+      const allStorageId = await ctx.db
+        .query("images")
+        .filter((q) => q.eq(q.field("contentCode"), contentCode))
+        .collect();
+
+      // Iterate through allStorageId and delete each storageId
+      console.log("allStorageId", allStorageId);
+
+      if (allStorageId.length > 0) {
+        for (const image of allStorageId) {
+          await ctx.storage.delete(image.storageId);
+          await ctx.db.delete(image._id);
+        }
+      }
+
+      // delete content
       await ctx.db.delete(staticContent._id);
+
       return { success: true, message: "staticContent deleted successfully" };
     } else {
       return { success: false, message: "staticContent not found" };

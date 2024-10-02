@@ -31,7 +31,7 @@ interface EditorToolsProps {
   contentFromDb: ContentData;
   contentCode: string;
   saveContent: (args: any) => Promise<any>;
-  deleteLessonByLessonCode: (args: any) => Promise<any>;
+  deleteContentByCode: (args: any) => Promise<any>;
 }
 
 export const EditorTools: React.FC<EditorToolsProps> = ({
@@ -39,7 +39,7 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
   contentCode,
   contentFromDb,
   saveContent,
-  deleteLessonByLessonCode,
+  deleteContentByCode,
 }) => {
   if (!editor) {
     return null;
@@ -115,11 +115,11 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
     }
 
     try {
-      const result = await deleteLessonByLessonCode({
-        lessonCode: inputContentCode,
+      const result = await deleteContentByCode({
+        contentCode: inputContentCode,
       });
     } catch (error) {
-      console.error("Error saving content:", error);
+      console.error("Error delete content:", error);
     }
   };
 

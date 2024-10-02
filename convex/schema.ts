@@ -42,5 +42,6 @@ export default defineSchema({
   images: defineTable({
     title: v.string(),
     storageId: v.string(),
+    contentCode: v.optional(v.string()),
   }),
 });

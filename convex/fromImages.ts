@@ -6,12 +6,17 @@ export const generateUploadUrl = mutation(async (ctx) => {
   return await ctx.storage.generateUploadUrl();
 });
 
-export const sendImage = mutation({
-  args: { storageId: v.id("_storage"), title: v.string() },
+export const saveImage = mutation({
+  args: {
+    storageId: v.id("_storage"),
+    title: v.string(),
+    contentCode: v.string(),
+  },
   handler: async (ctx, args) => {
     await ctx.db.insert("images", {
       storageId: args.storageId,
       title: args.title,
+      contentCode: args.contentCode,
     });
   },
 });
@@ -54,6 +59,11 @@ export const deleteImage = mutation({
     storageId: v.id("_storage"),
   },
   handler: async (ctx, { storageId }) => {
+    const imageDoc = await ctx.db
+      .query("images")
+      .filter((q) => q.eq(q.field("storageId"), storageId))
+      .unique();
+    await ctx.db.delete(imageDoc?._id!);
     return await ctx.storage.delete(storageId);
   },
 });

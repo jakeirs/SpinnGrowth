@@ -55,7 +55,7 @@ export const EditorCourseWrapper = ({ isAdmin }: EditorWrapperProps) => {
               pageId={lessonCode}
               contentFromDb={lessonFromDb}
               saveContent={saveContent}
-              deleteLessonByLessonCode={deleteLessonByLessonCode}
+              deleteContentByCode={deleteLessonByLessonCode}
               generateUploadUrl={generateUploadUrl}
               deleteImage={deleteImage}
               getImageURL={getImageURL}

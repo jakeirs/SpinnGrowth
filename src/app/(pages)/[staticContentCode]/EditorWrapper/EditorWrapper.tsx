@@ -20,7 +20,7 @@ export const EditorContentWrapper = ({ isAdmin }: EditorWrapperProps) => {
   const deleteImage = useMutation(api.fromImages.deleteImage);
   const getImageURL = useMutation(api.fromImages.getImageURL);
   const saveContent = useMutation(api.fromStaticContent.saveStaticContent);
-  const deleteLessonByLessonCode = useMutation(
+  const deleteContentByCode = useMutation(
     api.fromStaticContent.deleteContentByCode
   );
 
@@ -55,7 +55,7 @@ export const EditorContentWrapper = ({ isAdmin }: EditorWrapperProps) => {
               pageId={contentCode}
               contentFromDb={contentFromDb}
               saveContent={saveContent}
-              deleteLessonByLessonCode={deleteLessonByLessonCode}
+              deleteContentByCode={deleteContentByCode}
               generateUploadUrl={generateUploadUrl}
               deleteImage={deleteImage}
               getImageURL={getImageURL}

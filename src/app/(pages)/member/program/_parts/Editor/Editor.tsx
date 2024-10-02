@@ -14,6 +14,8 @@ import {
   CustomImage,
   onEditDeleteImageFromStorageConvex,
 } from "./custom-extension";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 export interface ContentData {
   content: string;
@@ -27,7 +29,7 @@ interface EditorProps {
   contentFromDb: ContentData;
   pageId: string;
   saveContent: (args: any) => Promise<any>;
-  deleteLessonByLessonCode: (args: any) => Promise<any>;
+  deleteContentByCode: (args: any) => Promise<any>;
   deleteImage: (args: any) => Promise<any>;
   generateUploadUrl: () => Promise<any>;
   getImageURL: (args: any) => Promise<any>;
@@ -38,11 +40,13 @@ export const Editor = ({
   contentFromDb,
   pageId,
   saveContent,
-  deleteLessonByLessonCode,
+  deleteContentByCode,
   deleteImage,
   generateUploadUrl,
   getImageURL,
 }: EditorProps) => {
+  const saveImage = useMutation(api.fromImages.saveImage);
+
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
@@ -79,6 +83,12 @@ export const Editor = ({
           body: file,
         });
         const { storageId } = await result.json();
+
+        await saveImage({
+          title: `isAdmin-contentCode-${pageId}-${Math.floor(Math.random() * 10000)}`,
+          contentCode: pageId,
+          storageId,
+        });
 
         // We'll just return the URL
         const imageUrl = await getImageURL({ storageId });
@@ -124,7 +134,7 @@ export const Editor = ({
           contentFromDb={contentFromDb}
           contentCode={pageId}
           saveContent={saveContent}
-          deleteLessonByLessonCode={deleteLessonByLessonCode}
+          deleteContentByCode={deleteContentByCode}
         />
       )}
       <EditorContent editor={editor} className="tiptap-editor" />
