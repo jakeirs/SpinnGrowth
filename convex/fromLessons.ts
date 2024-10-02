@@ -87,7 +87,7 @@ export const uploadCourseData = mutation({
           notes,
           nextLesson,
         });
-        return { success: true };
+        return { success: true, isNew: false };
       } catch (err) {
         console.error("Error patching data", err);
         throw err;
@@ -103,7 +103,7 @@ export const uploadCourseData = mutation({
         nextLesson,
         notes,
       });
-      return { success: true, lessonRecordId };
+      return { success: true, isNew: true };
     } catch (err) {
       console.error("Error inserting data", err);
       throw err;

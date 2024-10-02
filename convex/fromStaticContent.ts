@@ -109,7 +109,7 @@ export const saveStaticContent = mutation({
           content,
           title,
         });
-        return { success: true };
+        return { success: true, isNew: false };
       } catch (err) {
         console.error("Error patching data", err);
         throw err;
@@ -123,7 +123,7 @@ export const saveStaticContent = mutation({
         content,
         title,
       });
-      return { success: true, staticContentId };
+      return { success: true, isNew: true };
     } catch (err) {
       console.error("Error inserting data", err);
       throw err;

@@ -1,3 +1,5 @@
+"use-client";
+
 import React, { useCallback, useState } from "react";
 import { Editor } from "@tiptap/react";
 import { Button } from "@/components/ui/button";
@@ -25,6 +27,7 @@ import {
 } from "lucide-react";
 import { calcNextLesson } from "../IndexCourse/utils";
 import { ContentData } from "./Editor";
+import { useRouter, usePathname } from "next/navigation";
 
 interface EditorToolsProps {
   editor: Editor | null;
@@ -45,6 +48,8 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
     return null;
   }
 
+  const router = useRouter();
+  const pathname = usePathname();
   const { title, notes, nextLesson: nextLessonCode } = contentFromDb;
 
   const [inputTitle, setInputTitle] = useState(title);
@@ -102,6 +107,17 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
         content: json,
         nextLesson: inputNextLesson,
       });
+
+      if (result.isNew) {
+        console.log("result", result, inputContentCode);
+        const paths = pathname.split("/");
+        paths.pop();
+        paths.push(inputContentCode);
+        const newPathname = paths.join("/");
+
+        console.log("newPathname", newPathname);
+        router.push(newPathname);
+      }
     } catch (error) {
       console.error("Error saving content:", error);
     }
