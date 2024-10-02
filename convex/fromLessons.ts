@@ -168,7 +168,11 @@ export const getAllLessons = query({
   handler: async (ctx) => {
     try {
       const lessons = await ctx.db.query("lessons").order("asc").collect();
-      return lessons;
+      const sortedLessons = lessons.sort((a, b) =>
+        lessonCodeSort(a.lessonCode, b.lessonCode)
+      );
+
+      return sortedLessons;
     } catch (err) {
       console.error("Error querying all lessons", err);
       throw err;
@@ -192,7 +196,7 @@ export const getLessonsForChapter = query({
         )
         .order("asc")
         .collect();
-      return lessons.sort((a, b) => a.lessonCode.localeCompare(b.lessonCode));
+      return lessons.sort((a, b) => lessonCodeSort(a.lessonCode, b.lessonCode));
     } catch (err) {
       console.error("Error querying filtered lessons", err);
       throw err;
@@ -259,3 +263,17 @@ export const transformLessonsForCourseIndex = (
 
   return sections;
 };
+
+function lessonCodeSort(a: string, b: string): number {
+  const partsA = a.split("-").map(Number);
+  const partsB = b.split("-").map(Number);
+
+  for (let i = 0; i < Math.max(partsA.length, partsB.length); i++) {
+    const numA = partsA[i] || 0;
+    const numB = partsB[i] || 0;
+    if (numA !== numB) {
+      return numA - numB;
+    }
+  }
+  return 0;
+}
