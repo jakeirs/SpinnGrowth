@@ -3,7 +3,7 @@
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
-import { Doc } from "@/convex/_generated/dataModel";
+import Youtube from "@tiptap/extension-youtube";
 import Placeholder from "@tiptap/extension-placeholder";
 import TextAlign from "@tiptap/extension-text-align";
 import Underline from "@tiptap/extension-underline";
@@ -55,11 +55,21 @@ export const Editor = ({
           target: "_blank",
         },
       }),
+      Youtube.configure({
+        controls: true,
+        nocookie: true,
+        inline: true,
+        HTMLAttributes: {
+          class: "w-full aspect-square h-auto lg:px-20 sm:aspect-video",
+          height: 0,
+          width: 0,
+        },
+      }),
     ],
     editorProps: {
       attributes: {
         class: isAdmin
-          ? "prose max-w-none p-4 focus:outline-none min-h-[300px] border rounded-lg"
+          ? "prose max-w-none p-4 focus:outline-none min-h-[300px]  border rounded-lg"
           : "prose max-w-none focus:outline-none min-h-[300px]",
       },
     },

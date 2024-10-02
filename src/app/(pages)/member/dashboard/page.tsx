@@ -171,7 +171,7 @@ const CustomEditor = () => {
         be removed from storage.
       </p>
       <Button onClick={addYouTubeEmbed} className="mt-4">
-        Add YouTube Video
+        YouTube
       </Button>
     </div>
   );

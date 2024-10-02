@@ -20,6 +20,7 @@ import {
   Image as ImageIcon,
   Undo,
   Redo,
+  Youtube,
   Link as LinkIcon,
 } from "lucide-react";
 import { calcNextLesson } from "../IndexCourse/utils";
@@ -134,6 +135,15 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
   };
   const handleNextLessonChange = (value: string) => {
     setInputNextLesson(value);
+  };
+
+  const handleYouTubeEmbed = () => {
+    const url = prompt("Enter YouTube URL:");
+    if (url) {
+      editor?.commands.setYoutubeVideo({
+        src: url,
+      });
+    }
   };
 
   return (
@@ -310,6 +320,9 @@ export const EditorTools: React.FC<EditorToolsProps> = ({
         </Button>
         <Button variant="ghost" size="icon" onClick={addImage}>
           <ImageIcon className="h-4 w-4" />
+        </Button>
+        <Button variant="ghost" onClick={handleYouTubeEmbed}>
+          <Youtube className="h-4 w-4" />
         </Button>
         <div className="flex items-center space-x-2">
           <Input
