@@ -106,7 +106,11 @@
 
   ul,
   ol {
-    padding: 0 1rem;
+    padding: 0.5rem 4rem;
+  }
+
+  li {
+    padding: 0.2rem 0;
   }
 
   ul {
