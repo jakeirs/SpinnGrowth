@@ -63,7 +63,7 @@ export const ChapterItem: FC<ChapterItemProps> = ({
         {/** TITLE ITEM */}
         <div className="ml-4 flex items-center justify-between w-full ">
           <div>
-            <h3 className="text-2xl font-medium text-gray-900">{title}</h3>
+            <h3 className="text-lg font-medium text-gray-900">{title}</h3>
             {notes && <LessonNotes notes={notes} />}
           </div>
           {/** COLLAPSABLE ARROW */}
