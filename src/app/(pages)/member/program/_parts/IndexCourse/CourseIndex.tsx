@@ -25,14 +25,20 @@ export const CourseIndex: FC = () => {
 
   return (
     <ScrollArea className="w-full md:w-[420px] bg-gray-100 shadow-lg flex flex-col ">
-      {transformed.map((section) => (
-        <SectionItem
-          key={section.lessonCode}
-          {...section}
-          userProgress={userProgress}
-          allLessons={processedProgress[section.lessonCode].allLessons}
-        />
-      ))}
+      {transformed.map((section) => {
+        return (
+          <SectionItem
+            key={section.lessonCode}
+            {...section}
+            userProgress={userProgress}
+            allLessons={
+              processedProgress[section.lessonCode]
+                ? processedProgress[section.lessonCode].allLessons
+                : []
+            }
+          />
+        );
+      })}
     </ScrollArea>
   );
 };
